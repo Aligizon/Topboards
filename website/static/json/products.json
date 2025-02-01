@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "name": "Varmilo Minilo 75% Bluebell",
+        "switch": "Gateron G Pro Yellow",
+        "size": 75,
+        "price": 19690,
+        "image": "../img/photos/photo7.png"
+    },
+    {
+        "id": 2,
+        "name": "NuPhy Air75 V2 Basalt Black",
+        "switch": "NuPhy Moss Low Profile",
+        "size": 80,
+        "price": 13990,
+        "image": "../img/photos/photo8.png"
+    },
+    {
+        "id": 3,
+        "name": "Vortex PC66 Dark Grey",
+        "switch": "Cherry MX Red",
+        "size": 75,
+        "price": 18690,
+        "image": "../img/photos/photo9.png"
+    },
+    {
+        "id": 4,
+        "name": "Varmilo Sword Ariel VTP68",
+        "switch": "Varmilo MC Daisy L",
+        "size": 65,
+        "price": 32090,
+        "image": "../img/photos/photo10.png"
+    }
+]

@@ -1,0 +1,257 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Topboards_main{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mainPageStyles.css') }}">
+{% endblock %}
+
+{% block content %}
+        <div class="container-fluid section-1 mt-3 py-3">
+            <div class="row">
+                <div class="main-slider col-11">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.is_main_category %}
+                                <a href="/productPage/{{ product.name }}/{{ product.id }}">
+                                    <div class="slider__item">
+                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name ) }}" alt="" >
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/photos/default.png') }}" alt="" class="slider__item">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid section-2 mt-5 py-3">
+
+            <div class="row">
+                <h3 class="col-11 mx-auto mb-4">New added</h3>
+            </div>
+
+            <div class="row">
+                <div class="news-slider col-11">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.is_new_category %}
+                                <a href="/productPage/{{ product.name }}/{{ product.id }}" class="slider__item product-card">
+                                    
+                                    <div class="product-img-wrapper my-2">
+                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name ) }}" alt="" class="product-img">
+                                    </div>
+                                    
+                                    <div class="product-name-wrapper">
+                                        <h4 class="product-name">{{ product.name}}</h4>
+                                    </div>
+
+                                    <div class="product-description-wrapper">
+                                        {% if product.switches and product.form_factor %}
+                                            <p class="product-description">{{ product.switches }}, {{ product.form_factor }}</p> 
+                                        {% endif %}
+                                        <h4 class="product-price">${{ product.price|int }}</h4>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="news-slider-control-el my-3">
+            </div>
+        </div>
+
+        <div class="container-fluid section-3 mt-5 py-3">
+            <h3>Create your custom keyboard</h3>
+
+            <div class="row features mt-4">
+
+                <div class="feature-box col-md-3 col-11 pt-3 mb-3">
+                    <div class="feature-c-1">
+                        <h4>Unique design</h4>
+                    </div>
+                    <div class="feature-c-2">
+                        <img class="f-box-img" src="{{ url_for('static', filename='img/photos/photo1.png')}}" alt="" />
+                    </div>
+                </div>
+
+                <div class="feature-box col-md-3 col-11 pt-3 mb-3">
+                    <div class="feature-c-1">
+                        <h4>High-quality materials</h4>
+                    </div>
+                    <div class="feature-c-2">
+                        <img class="f-box-img" src="{{ url_for('static', filename='img/photos/photo4.png')}}" alt="" />
+                    </div>
+                </div>
+
+                <div class="feature-box col-md-3 col-11 pt-3 mb-3">
+                    <div class="feature-c-1">
+                        <h4>Cable as a gift</h4>
+                    </div>
+                    <div class="feature-c-2">
+                        <img class="f-box-img" src="{{ url_for('static', filename='img/photos/photo6.png')}}" alt="" />
+                    </div>
+                </div>
+
+            </div>
+
+            <a href="">
+                <h4 class="order-but d-inline-block my-2">Create</h4>
+            </a>
+        </div>
+
+        <div class="container-fluid section-4 mt-5 py-3">
+            <div class="row">
+                <h3 class="col-11 mx-auto mb-4">Recommended</h3>
+            </div>
+
+            <div class="row">
+                <div class="recs-slider col-11">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.is_recommended_category %}
+                                <a href="/productPage/{{ product.name }}/{{ product.id }}" class="slider__item product-card">
+                                    
+                                    <div class="product-img-wrapper my-2">
+                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name ) }}" alt="" class="product-img">
+                                    </div>
+                                    
+                                    <div class="product-name-wrapper">
+                                        <h4 class="product-name">{{ product.name}}</h4>
+                                    </div>
+
+                                    <div class="product-description-wrapper">
+                                        {% if product.switches and product.form_factor %}
+                                            <p class="product-description">{{ product.switches }}, {{ product.form_factor }}</p> 
+                                        {% endif %}
+                                        <h4 class="product-price">${{ product.price|int }}</h4>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="recs-slider-control-el my-3">
+            </div>
+        </div>
+
+
+        <div class="container-fluid section-5 mt-5 py-3">
+
+            <div class="row">
+                <h3 class="col-11 mx-auto mb-4">Other services</h3>
+            </div>
+
+            <div class="row">
+                <div class="services-slider col-11">
+                    {% if products %}
+                        {% for product in products %}
+                            {% if product.is_otherServices_category %}
+                                <a href="/productPage/{{ product.name }}/{{ product.id }}" class="slider__item product-card">
+                                    
+                                    <div class="product-img-wrapper my-2">
+                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name ) }}" alt="" class="product-img">
+                                    </div>
+                                    
+                                    <div class="product-name-wrapper">
+                                        <h4 class="product-name">{{ product.name}}</h4>
+                                    </div>
+
+                                    <div class="product-description-wrapper">
+                                        <h4 class="product-price">from ${{ product.price|int }}</h4>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="services-slider-control-el my-3">
+            </div>
+
+        </div>
+
+
+        <!-- <div class="container-fluid section-5 mt-5 py-3">
+            <h3>Прочие услуги</h3>
+
+            <div class="row features mt-4">
+
+                <div class="product-card py-2 mb-2">
+                    <div class="product-name-wrapper">
+                        <h4 class="product-name">Ремонт</h4>
+                    </div>
+
+                    <div class="product-img-wrapper my-2">
+                        <img src="../static/img/photos/other_services_1.png" alt="" class="product-img">
+                    </div>
+
+                    <div class="product-description-wrapper">
+                        <p class="product-description">Ремонт плат, разъемов</p>
+                        <h4 class="product-price mt-3">от ₽500</h4>
+                    </div>
+                </div>
+
+                <div class="product-card py-2 mb-2">
+                    <div class="product-name-wrapper">
+                        <h4 class="product-name">Апгрейд</h4>
+                    </div>
+
+                    <div class="product-img-wrapper my-2">
+                        <img src="../static/img/photos/other_services_2.png" alt="" class="product-img">
+                    </div>
+
+                    <div class="product-description-wrapper">
+                        <p class="product-description">Замена свитчей, шумоизоляция</p>
+                        <h4 class="product-price mt-3">от ₽800</h4>
+                    </div>
+                </div>
+
+                <div class="product-card py-2 mb-2">
+                    <div class="product-name-wrapper">
+                        <h4 class="product-name">Смазка</h4>
+                    </div>
+
+                    <div class="product-img-wrapper my-2">
+                        <img src="../static/img/photos/other_services_3.png" alt="" class="product-img">
+                    </div>
+
+                    <div class="product-description-wrapper">
+                        <p class="product-description">Смазка свитчей клавиатур</p>
+                        <h4 class="product-price mt-3">от ₽1490</h4>
+                    </div>
+                </div>
+
+                <div class="product-card py-2 mb-2">
+                    <div class="product-name-wrapper">
+                        <h4 class="product-name">Чистка</h4>
+                    </div>
+
+                    <div class="product-img-wrapper my-2">
+                        <img src="../static/img/photos/other_services_4.png" alt="" class="product-img">
+                    </div>
+
+                    <div class="product-description-wrapper">
+                        <p class="product-description">Глубокая или профилактическая</p>
+                        <h4 class="product-price mt-3">от ₽900</h4>
+                    </div>
+                </div>
+
+            </div>
+
+        </div> -->
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/slick.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.fancybox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slick.settings.js') }}" type="module"></script>
+{% endblock %}

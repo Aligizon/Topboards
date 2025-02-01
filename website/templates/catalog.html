@@ -1,0 +1,136 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Topboards_main{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/catalogStyles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="catalog-container container-fluid mt-3 mb-5 py-3">
+    <div class="row">
+
+        <div class="filters col-lg-3 col-0 px-0 py-3">
+
+            <div class="fliter-section mb-3">
+                <h5 class="mb-2">Price</h5>
+                <form id="price-filter-form" action="/catalog" method="get">
+                    <div class="d-inline-block ms-2 my-2">
+                        <h6 class="d-inline-block me-1">from</h6>
+                        <input type="number" id="minPriceBox" name="_from" class="price-box d-inline-block ps-1" min="0" placeholder="{{prices['defaultMinPrice']|int}}" {% if prices['minPrice'] %} value="{{ prices['minPrice']|int }}" {% endif %}>   
+                    </div>
+    
+                    <div class="d-inline-block ms-2 me-3 my-2">
+                        <h6 class="d-inline-block me-1">to</h6>
+                        <input type="number" id="maxPriceBox" name="_to" class="price-box d-inline-block ps-1" min="0" placeholder="{{prices['defaultMaxPrice']|int}}" {% if prices['maxPrice'] %} value="{{ prices['maxPrice']|int }}" {% endif %}>  
+                    </div>
+                    <input type="submit" class="d-none">
+                </form>
+                
+            </div>
+
+            <div class="fliter-section mb-3">
+                <h5 class="my-2">Availability</h5>
+
+                <div>
+                    <a class="product-options-div {% if request.args.get('availability')=='all' %}selected{% endif %} me-3 mb-2"
+                    href="{{ createSingleChoiseFilterUrl('availability', 'all') }}">
+                        <h6>All</h6>
+                    </a>
+                    <a class="product-options-div {% if request.args.get('availability')=='available' %}selected{% endif %} me-3 mb-2"
+                    href="{{ createSingleChoiseFilterUrl('availability', 'available') }}">
+                        <h6>Available</h6>  
+                    </a>
+                </div>
+            </div>
+
+            {% if switchesList %}
+                <div class="fliter-section mb-3">
+                    <h5 class="my-2">Switches</h5>
+                    
+                    <div>
+                        {% for switches in switchesList %}
+                            <a class="product-options-div {% if switches in request.args.getlist('switches') %}selected{% endif %} me-3 mb-3"
+                            href="{{ createMultipleChoiseFilterUrl('switches', switches) }}"> 
+                                <h6>{{ switches }}</h6>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if brandsList %}
+            <div class="fliter-section mb-3">
+                <h5 class="my-2">Brands</h5>
+
+                <div>
+                    {% for brand in brandsList %}
+                        <a class="product-options-div {% if brand in request.args.getlist('brand') %}selected{% endif %} me-3 mb-2"
+                        href="{{ createMultipleChoiseFilterUrl('brand', brand) }}">
+                            <h6>{{ brand }}</h6>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+
+            <div class="fliter-section mb-3">
+                <a class="reset-filters" href="{{request.path}}">
+                    <p>Delete filters</p>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="catalog col-lg-9 col-12 py-3">
+            {% if products %}
+                {% for product in products %}
+                    <a class="product-card {% if product.quantity == 0 %}opacity-50{% endif %}" href="/productPage/{{ product.name }}/{{ product.id }}">
+                        
+                        <div class="product-img-wrapper my-2">
+                            <img class="product-img" src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name ) }}" alt="">
+                            
+                            {% if current_user.is_authenticated %}
+                            <span class="like-icon icon-m">
+                                <?xml version="1.0" ?>
+                                <svg height="24" version="1.1" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                                    <g transform="translate(0 -1028.4)">
+                                        <path d="m7 1031.4c-1.5355 0-3.0784 0.5-4.25 1.7-2.3431 2.4-2.2788 6.1 0 8.5l9.25 9.8 9.25-9.8c2.279-2.4 2.343-6.1 0-8.5-2.343-2.3-6.157-2.3-8.5 0l-0.75 0.8-0.75-0.8c-1.172-1.2-2.7145-1.7-4.25-1.7z"
+                                        fill="#D9D9D9" stroke="#969696"/>
+                                    </g>
+                                </svg>
+                            </span>
+                            {% endif %}
+
+                            {% if product.quantity == 0 %}
+                                <h4 class="out-of-stock">Out of stock</h4>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-name-wrapper">
+                            <h4 class="product-name">{{ product.name }}</h4>
+                        </div>
+
+                        <div class="product-description-wrapper">
+                            {% if product.switches and product.form_factor %}
+                                <p class="product-description">{{ product.switches }}, {{product.form_factor}}</p>
+                            {% endif %}
+                            <h4 class="product-price">${{ product.price|int }}</h4>
+                        </div>
+                    </a>
+                {% endfor%}
+            {% else %}
+                <h3>We are sorry, but no products were found</h3>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/catalog.js') }}"></script>
+{% endblock %}

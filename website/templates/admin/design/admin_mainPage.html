@@ -1,0 +1,450 @@
+{% extends "layouts/admin_base.html" %}
+
+{% block title %}Categories{% endblock %}
+
+{% block head %} <!-- css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %} 
+
+    <div class="modal fade" id="mainSliderModal" tabindex="-1" data-bs-theme="dark" aria-labelledby="mainSliderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-1">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mainSliderModalLabel">Add products</h5>
+                    <div class="d-flex align-items-center">
+                        <button type="submit" class="no-style-button modal-button" form="mainSliderForm" >
+                            <img class="icon-xl" src="{{ url_for('static', filename = 'fonts/checkmark_2_icon.svg') }}" alt="new">
+                        </button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="search-box" placeholder="Search...">
+                    </div>
+                    <form id="mainSliderForm" class="base-form" action="/admin/mainPageConstructor/mainSlider" method="post">
+                        <div class="table-wrapper">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <input id="mainSliderSelectAll" class="checkbox-input" type="checkbox" name="selectAll">
+                                        </th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Color</th>
+                                        <th scope="col">Switches</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                        {% if not product.is_main_category %}
+                                            <tr>
+                                                <td>
+                                                    <input class="checkbox-input mainSliderCheckbox" id="{{ product.id }}" value="{{ product.id }}" type="checkbox" name="is_main_category[]" >
+                                                </td>
+                                                <td class="p-0">
+                                                    <div class="table-image-div">
+                                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                                    </div>
+                                                </td>
+                                                <td>{{ product.name }}</td>
+                                                <td>{{ product.color }}</td>
+                                                <td>{{ product.switches }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div class="modal fade" id="newAddedModal" tabindex="-1" data-bs-theme="dark" aria-labelledby="newAddedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-1">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newAddedModalLabel">Add products</h5>
+                    <div class="d-flex align-items-center">
+                        <button type="submit" class="no-style-button modal-button" form="newAddedForm" >
+                            <img class="icon-xl" src="{{ url_for('static', filename = 'fonts/checkmark_2_icon.svg') }}" alt="new">
+                        </button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="search-box" placeholder="Search...">
+                    </div>
+                    <form id="newAddedForm" class="base-form" action="/admin/mainPageConstructor/newAdded" method="post">
+                        <div class="table-wrapper">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <input id="newAddedSelectAll" class="checkbox-input" type="checkbox" name="selectAll">
+                                        </th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Color</th>
+                                        <th scope="col">Switches</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                        {% if not product.is_new_category %}
+                                            <tr>
+                                                <td>
+                                                    <input class="checkbox-input newAddedCheckbox" id="{{ product.id }}" value="{{ product.id }}" type="checkbox" name="is_new_category[]" >
+                                                </td>
+                                                <td class="p-0">
+                                                    <div class="table-image-div">
+                                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                                    </div>
+                                                </td>
+                                                <td>{{ product.name }}</td>
+                                                <td>{{ product.color }}</td>
+                                                <td>{{ product.switches }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div class="modal fade" id="recommendedModal" tabindex="-1" data-bs-theme="dark" aria-labelledby="recommendedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-1">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recommendedModalLabel">Add products</h5>
+                    <div class="d-flex align-items-center">
+                        <button type="submit" class="no-style-button modal-button" form="recommendedForm">
+                            <img class="icon-xl" src="{{ url_for('static', filename = 'fonts/checkmark_2_icon.svg') }}" alt="new">
+                        </button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="search-box" placeholder="Search...">
+                    </div>
+                    <form id="recommendedForm" class="base-form" action="/admin/mainPageConstructor/recommended" method="post">
+                        <div class="table-wrapper">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <input id="recommendedSelectAll" class="checkbox-input" type="checkbox" name="selectAll">
+                                        </th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Color</th>
+                                        <th scope="col">Switches</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                        {% if not product.is_recommended_category %}
+                                            <tr>
+                                                <td>
+                                                    <input class="checkbox-input recommendedCheckbox" id="{{ product.id }}" value="{{ product.id }}" type="checkbox" name="is_recommended_category[]" >
+                                                </td>
+                                                <td class="p-0">
+                                                    <div class="table-image-div">
+                                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                                    </div>
+                                                </td>
+                                                <td>{{ product.name }}</td>
+                                                <td>{{ product.color }}</td>
+                                                <td>{{ product.switches }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}              
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div class="modal fade" id="otherServicesModal" tabindex="-1" data-bs-theme="dark" aria-labelledby="otherServicesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-1">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="otherServicesModalLabel">Add products</h5>
+                    <div class="d-flex align-items-center">
+                        <button type="submit" class="no-style-button modal-button" form="otherServicesForm">
+                            <img class="icon-xl" src="{{ url_for('static', filename = 'fonts/checkmark_2_icon.svg') }}" alt="">
+                        </button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="search-box" placeholder="Search...">
+                    </div>
+                    <form id="otherServicesForm" class="base-form" action="/admin/mainPageConstructor/otherServices" method="post">
+                        <div class="table-wrapper">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <input id="otherServicesSelectAll" class="checkbox-input" type="checkbox" name="selectAll">
+                                        </th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Color</th>
+                                        <th scope="col">Switches</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                        {% if not product.is_otherServices_category %}
+                                            <tr>
+                                                <td>
+                                                    <input class="checkbox-input otherServicesCheckbox" id="{{ product.id }}" value="{{ product.id }}" type="checkbox" name="is_otherServices_category[]" >
+                                                </td>
+                                                <td class="p-0">
+                                                    <div class="table-image-div">
+                                                        <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                                    </div>
+                                                </td>
+                                                <td>{{ product.name }}</td>
+                                                <td>{{ product.color }}</td>
+                                                <td>{{ product.switches }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}              
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="d-flex justify-content-between align-items-end">
+                <h2 class="category-title mt-3">Main Page Constructor</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid my-3">
+        <div class="row row-gap-3">
+
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-end px-1 mb-1">
+                    <h5>Main Slider</h5>
+                    <button type="button" class="add-product-button no-style-button" data-bs-toggle="modal" data-bs-target="#mainSliderModal">
+                        <img class="icon-l" src="{{ url_for('static', filename = 'fonts/plus_icon.svg') }}" alt="new">
+                    </button>
+                </div>
+                <div class="table-wrapper p-2">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            {% for product in products %}
+                                {% if product.is_main_category %}
+                                    <tr>
+                                        <th scope="row">{{ product.id }}</th>
+                                        <td class="p-0">
+                                            <div class="table-image-div">
+                                                <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                            </div>
+                                        </td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.category }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center ">
+                                                <a href="mainPageConstructor/mainSlider/delete/{{ product.id }}">
+                                                    <img class="icon-m" src="{{ url_for('static', filename = 'fonts/delete_icon.svg') }}" alt="delete">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif%}
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-end px-1 mb-1">
+                    <h5>New added</h5>
+                    <button type="button" class="add-product-button no-style-button" data-bs-toggle="modal" data-bs-target="#newAddedModal">
+                        <img class="icon-l" src="{{ url_for('static', filename = 'fonts/plus_icon.svg') }}" alt="new">
+                    </button>
+                </div>
+
+                <div class="table-wrapper p-2">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            {% for product in products %}
+                                {% if product.is_new_category %}
+                                    <tr>
+                                        <th scope="row">{{ product.id }}</th>
+                                        <td class="p-0">
+                                            <div class="table-image-div">
+                                                <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                            </div>
+                                        </td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.category }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center ">
+                                                <a href="mainPageConstructor/newAdded/delete/{{ product.id }}">
+                                                    <img class="icon-m" src="{{ url_for('static', filename = 'fonts/delete_icon.svg') }}" alt="delete">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif%}
+                            {% endfor %}    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-end px-1 mb-1">
+                    <h5>Recommended</h5>
+                     <button type="button" class="add-product-button no-style-button" data-bs-toggle="modal" data-bs-target="#recommendedModal">
+                        <img class="icon-l" src="{{ url_for('static', filename = 'fonts/plus_icon.svg') }}" alt="new">
+                    </button>
+                </div>
+
+                <div class="table-wrapper p-2">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            {% for product in products %}
+                                {% if product.is_recommended_category %}
+                                    <tr>
+                                        <th scope="row">{{ product.id }}</th>
+                                        <td class="p-0">
+                                            <div class="table-image-div">
+                                                <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                            </div>
+                                        </td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.category }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center ">
+                                                <a href="mainPageConstructor/recommended/delete/{{ product.id }}">
+                                                    <img class="icon-m" src="{{ url_for('static', filename = 'fonts/delete_icon.svg') }}" alt="delete">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif%}
+                            {% endfor %}   
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-end px-1 mb-1">
+                    <h5>Other Services</h5>
+                    <button type="button" class="add-product-button no-style-button" data-bs-toggle="modal" data-bs-target="#otherServicesModal">
+                        <img class="icon-l" src="{{ url_for('static', filename = 'fonts/plus_icon.svg') }}" alt="new">
+                    </button>
+                </div>
+
+                <div class="table-wrapper p-2">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>            
+                            {% for product in products %}
+                                {% if product.is_otherServices_category %}
+                                    <tr>
+                                        <th scope="row">{{ product.id }}</th>
+                                        <td class="p-0">
+                                            <div class="table-image-div">
+                                                <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="">
+                                            </div>
+                                        </td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.category }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center ">
+                                                <a href="mainPageConstructor/otherServices/delete/{{ product.id }}">
+                                                    <img class="icon-m" src="{{ url_for('static', filename = 'fonts/delete_icon.svg') }}" alt="delete">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif%}
+                            {% endfor %}       
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+
+
+{% endblock %}
+
+
+{% block scripts %} <!-- js -->
+<script src="{{ url_for('static', filename='js/adminMainPage.js') }}"></script>
+{% endblock %}

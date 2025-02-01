@@ -1,0 +1,13 @@
+# Visual Studio Code
+.vscode/
+
+# Python Virtual Environment
+env/
+
+# Python Bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Log files
+*.log

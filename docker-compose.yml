@@ -1,0 +1,25 @@
+services:
+  flask:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/website
+    restart: always
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: topboards
+      POSTGRES_PASSWORD: my_topboards_16
+      POSTGRES_DB: database
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./config/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data: {}  

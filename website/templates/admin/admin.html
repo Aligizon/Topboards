@@ -1,0 +1,136 @@
+{% extends "layouts/admin_base.html" %}
+
+{% block title %}admin{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="col-sm content">
+                <h6>All orders</h6>
+                <div class="metrics-wrapper">
+                    <h1>{{ orders | length }}</h1>
+                    <span>▲+20%</span>
+                </div>
+            </div>
+            <div class="col-sm content">
+                <h6>All sales</h6>
+                <div class="metrics-wrapper">
+                    <h1>${{ total_sum }}</h1>
+                    <span>▲+11%</span>
+                </div>
+            </div>
+            <div class="col-sm content">
+                <h6>All clients</h6>
+                <div class="metrics-wrapper">
+                    <h1>{{ users }}</h1>
+                    <span>▲+10%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-3">
+        <div class="row gap-1 row-gap-3">
+            <div class="table-wrapper col-lg p-2">
+                <h6 class="mb-2">New orders</h6>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Sum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            {% if order.current_status < orderStatus.Completed.value %}
+                                <tr class="cursor-pointer" onclick="window.location='/admin/order/update/{{order.id}}';">
+                                    <th scope="row">{{ order.id }}</th>
+                                    <td>{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                                    <td>{{ order.current_status  | get_order_status_name_filter }}</td>
+                                    <td>{{ order.created_at.strftime('%H:%M:%S, %d.%m.%Y') }}</td>
+                                    <td>${{ order.total_cost }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        <!-- <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob Arabo</td>
+                            <td>Shipped</td>
+                            <td>20.07.2024</td>
+                            <td>€13840</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry Williams</td>
+                            <td>Delivered</td>
+                            <td>11.07.2024</td>
+                            <td>€130</td>
+                        </tr> -->
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-wrapper col-lg p-2">
+                <h6 class="mb-2">Order history</h6>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Sum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            {% if order.current_status >= orderStatus.Completed.value %}
+                                <tr class="cursor-pointer" onclick="window.location='/admin/order/update/{{order.id}}';">
+                                    <th scope="row">{{ order.id }}</th>
+                                    <td>{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                                    <td>{{ order.current_status  | get_order_status_name_filter }}</td>
+                                    <td>{{ order.created_at.strftime('%H:%M:%S, %d.%m.%Y') }}</td>
+                                    <td>${{ order.total_cost }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        <!-- <tr>
+                            <th scope="row">1</th>
+                            <td>Rafael Nadal</td>
+                            <td>Processing</td>
+                            <td>15.08.2024</td>
+                            <td>€5465</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Robert Pattinson</td>
+                            <td>Shipped</td>
+                            <td>19.07.2024</td>
+                            <td>€154</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry Williams</td>
+                            <td>Delivered</td>
+                            <td>09.07.2024</td>
+                            <td>€1280</td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+
+{% endblock %}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm order</title>
+    <!-- Bootstrap links -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    
+    <!-- Fancybox links -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/commonStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/order.css') }}">
+
+</head>
+<body class="body">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' or category == 'error' %}                
+                    <div class="custom-alert zindex-alert alert-{{category}} show">
+                        <h6>{{ message }}</h6>
+                        <button class="no-style-button close-button">
+                            <img class="icon-xs" onclick="closeAlert()" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="">
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="order-container container-fluid">
+
+            <div class="adjustable-column py-4">
+                
+                <form id="order-form" class="base-form pb-5" action="{{ url_for('homeView.checkout') }}" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="order-details">
+                        <div class="opacity-50 d-flex justify-content-start align-items-center cursor-pointer my-5" onclick="document.referrer ? window.history.back() : window.location.href = '/';">
+                            <img class="icon-m" src="{{url_for('static', filename='fonts/arrow_prev_1_icon.svg')}}" alt="">
+                            <h5 class="cancel-text fw-light">Back to shop</h5>
+                        </div>
+                        {% if not current_user.is_authenticated %}
+                        <div class="contact-details">
+                            <h2 class="my-4">Contact</h2>
+                            {{ form.firstName }}
+                            {{ form.lastName }}
+                            {{ form.email }}
+                            {{ form.phoneNumber }}
+                        </div>
+                        {% endif %}
+
+                        <div class="delivery-details">
+                            <h2 class="my-4">Delivery</h2>
+
+                            <h6 class="fw-bold mb-2">Country</h6>
+                            <div class="custom-select-container mb-4">
+                                <div class="custom-select">
+                                    <span class="selected-option"><p class="text-3">Select country</p></span>
+                                    <div class="options-list">                                   
+                                        <div class="option" data-value="RU">Russia</div>
+                                        <div class="option" data-value="BY">Belarus</div>
+                                        <div class="option" data-value="KZ">Kazakhstan</div>
+                                        <div class="option" data-value="AM">Armenia</div>
+                                        <div class="option" data-value="GE">Georgia</div>
+                                    </div>
+                                </div>
+                                {{ form.country }}
+                            </div>
+
+                            <h6 class="fw-bold mb-2">Shipping method</h6>
+                            <div class="custom-select-container mb-4">
+                                <div class="custom-select">
+                                    <span class="selected-option"><p class="text-3">Select shipping method</p></span>
+                                    <div class="options-list">
+                                        {% for method in ShippingMethod %}
+                                            <div class="option" data-value="{{ method.value }}">{{ method.name}}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {{ form.shipping_method }}
+                            </div>
+
+                            <div id="shipping-address">  
+                                <h6 class="fw-bold mb-2">Shipping address</h6>
+                                {{ form.shippingAddressLine1 }}
+                                {{ form.shippingAddressLine2 }}
+                                {{ form.shippingAddressCity }}
+                                {{ form.shippingAddressPostalCode }}
+                            </div>
+                        </div>
+
+                        <div class="payment-details">
+                            <h2 class="my-4">Payment</h2>
+
+                            <h6 class="fw-bold mb-2">Payment method</h6>
+                            <div class="custom-select-container mb-2">
+                                <div class="custom-select">
+                                    <span class="selected-option"><p class="text-3">Select Payment Method</p></span>
+                                    <div class="options-list">
+                                        {% for method in PaymentMethod %}
+                                            <div class="option" data-value="{{ method.value }}">{{ method.name}}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {{ form.payment_method }}
+                            </div>
+                            <p class="service-text mb-4">After clicking “Place order”, you will be redirected to Stripe to complete your purchase securely.</p>
+
+
+                            <div class="checkbox-div mb-4">
+                                <label class="me-1" for="same_billing_address">Use shipping address for billing address</label>
+                                <label class="switch">
+                                    {{ form.sameBillingAddress }}
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div id="billing-address" class="d-none mb-4">
+                                <h6 class="fw-bold mb-2">Billing address</h6>
+                                {{ form.billingAddressLine1 }}
+                                {{ form.billingAddressLine2 }}
+                                {{ form.billingAddressCity }}
+                                {{ form.billingAddressPostalCode }}
+                            </div>
+                            
+                            <button class="product-button mb-2" type="submit">
+                                <h4>Place order</h4>
+                            </button>
+
+                            <p class="service-text">By click button «Place Order» I have read and accept the Topboards terms & conditions, privacy policy and withdrawal policy.</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="fixed-column">
+
+                <div class="product-list px-3 pt-4">
+                    {% if current_user.is_authenticated %}
+                        {% for cartItem in current_user.shopping_session.cart_items %}
+                            <div class="product-item my-4">
+                                <div class="product-img-description-div">
+                                    <div class="item-img-wrapper me-3">
+                                        <img src="{{ url_for('static', filename='img/product_images/' + (cartItem.product.product_images|selectattr('is_main', 'equalto', True)|first).image_name)}}"/>
+                                        <span>{{ cartItem.quantity }}</span>
+                                    </div>
+        
+                                    <div class="item-description me-3">
+                                        <div class="item-name"><h6>{{ cartItem.product.name }} {{ cartItem.product.color }}</h6></div>
+                                        <div class="item-property"><p class="text-3 fw-light">{{ cartItem.product.switches }}</p></div>
+                                    </div>
+                                </div>
+                                <div class="item-price"><h6>{{ (cartItem.product.price | int  * cartItem.quantity) | decimal_filter }} $</h6></div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        {% if session.get('cart') %}
+                            {% for cartItemId, cartItem in session.get('cart').items() %}
+                                <div class="product-item my-4">
+                                    <div class="product-img-description-div">
+                                        <div class="item-img-wrapper me-3">
+                                            <img src="{{url_for('static', filename='img/product_images/' + cartItem.imageName)}}"/>
+                                            <span>{{ cartItem.quantity }}</span>
+                                        </div>
+            
+                                        <div class="item-description me-3">
+                                            <div class="item-name"><h6>{{ cartItem.name }} {{ cartItem.color }}</h6></div>
+                                            <div class="item-property"><p class="text-3 fw-light">{{ cartItem.switches }}</p></div>
+                                        </div>
+                                    </div>
+                                    <div class="item-price"><h6>{{ (cartItem.price | int  * cartItem.quantity) | decimal_filter }} $</h6></div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="order-summary px-3 py-4">
+                    <div class="promo-code">
+                        <input form="order-form" class="base-input mb-4" type="text" placeholder="Promo code...">
+                    </div>
+
+                    <div class="shipping-cost d-flex justify-content-between mb-4">
+                        <h6 class="fw-normal">Shipping</h6>
+                        <h6 class="fw-normal">7.9 $</h6>
+                    </div>
+
+                    <div class="total-cost d-flex justify-content-between mb-4">
+                        <h5 class="fw-bold">Total</h5>
+                        {% if current_user.is_authenticated %}
+                        <h5 class="fw-bold">{{current_user.shopping_session.total}} $</h5>
+                        {% else %}
+                        <h5 class="fw-bold">{{session.get('cartTotalAmount')}} $</h5>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/customSelect.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/order.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm order</title>
+    <!-- Bootstrap links -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/commonStyles.css') }}">
+</head>
+<body class="body vh-100 d-flex align-items-center">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 d-flex flex-column align-items-center">
+                <h1 class="text-center my-4">Thank you for your order!</h1>
+                <a href="\">
+                    <div class="product-button my-4 d-flex align-items-center justify-content-center">
+                        <h4 class="text-center">Back to home page</h4>
+                        <img class="icon-m" src="{{url_for('static', filename='fonts/arrow_next_1_icon.svg')}}" alt="">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/customSelect.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/order.js') }}"></script>
+</body>
+</html>

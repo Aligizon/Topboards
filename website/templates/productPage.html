@@ -1,0 +1,141 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{selectedProduct.name}} {% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/productStyles.css') }}">
+{% endblock %}
+
+{% block content %}
+
+        <div class="container-fluid product-section mb-5 py-2">
+
+            <div class="row px-2 py-3 bg-2 rounded">
+                {% if selectedProduct %}
+
+                <div class="col-12 col-lg-7">
+                    {% if selectedProduct.product_images %}
+                        <div class="prod-slider my-3">
+                            {% for image in selectedProduct.product_images %}
+                                <a data-fancybox="gallery" data-src="{{ url_for('static', filename='img/product_images/' + image.image_name) }}">
+                                    <img src="{{ url_for('static', filename='img/product_images/' + image.image_name) }}" alt="" class="slider__item">
+                                </a>
+                            {% endfor %}
+                        </div>
+
+                        <div class="prod-slider-nav my-3">
+                            {% for image in selectedProduct.product_images %}
+                                <img src="{{ url_for('static', filename='img/product_images/' + image.image_name) }}" alt="" class="slider__item rounded">
+                            {% endfor %}
+                        </div>     
+                    {% endif %}
+                </div>
+
+                <div class="product-config col-12 col-lg-5">
+
+                    <div class="row my-4">
+                        <h3>{{ selectedProduct.name }}</h3>
+                    </div>
+
+                    {% if selectedProduct.color %}
+                    <div class="row my-4">
+                        <div class="col-12">
+                            <h5 class="mb-3">Color</h5>
+                            {% for color in switchesFilters[selectedProduct.switches] %}
+                                {% if selectedProduct.color == color %}
+                                    <div class="product-options-div {% if color==selectedProduct.color %}selected{% endif %} me-2 mb-2">
+                                        <span class="_circle rounded-circle d-inline-block me-1" style="background-color: {{ colorsHex[color] }}"></span>
+                                        <p class="d-inline-block">{{ color }}</p>
+                                    </div>
+                                {% else %}
+                                    <a href="/productPage/{{ selectedProduct.name }}_{{ color}}_{{ selectedProduct.switches }}">
+                                        <div class="product-options-div me-2 mb-2">
+                                            <span class="_circle rounded-circle d-inline-block me-1" style="background-color: {{ colorsHex[color] }}"></span>
+                                            <p class="d-inline-block">{{ color }}</p>
+                                        </div>
+                                    </a>
+                                {% endif  %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if selectedProduct.switches %}
+                    <div class="row my-4">
+                        <div class="col-12">
+                            <h5 class="mb-3">Switches</h5>
+                            {% for switches in colorFilters[selectedProduct.color] %}
+                            
+                                {% if selectedProduct.switches == switches%}
+                                <div class="product-options-div {% if switches==selectedProduct.switches %}selected{% endif %} me-2 mb-2 ">
+                                    <p>{{ switches }}</p>
+                                </div>
+                                {% else %}
+                                <a href="/productPage/{{ selectedProduct.name }}_{{ selectedProduct.color}}_{{ switches }}">
+                                    <div class="product-options-div {% if switches==selectedProduct.switches %}selected{% endif %} me-2 mb-2 ">
+                                        <p>{{ switches }}</p>
+                                    </div>
+                                </a>
+                                {% endif %}
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- <div class="row my-4">
+                        <div class="col-12">
+                            <h5 class="mb-3">Layout</h5>
+                            <div class="d-inline-block">
+                                <div class="product-options-div me-2 mb-2">
+                                    <p class="d-inline-block">Russian</p>
+                                </div>
+                                <div class="product-options-div me-2 mb-2">
+                                    <p class="d-inline-block me-2 mb-2 ">English</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="row my-4">
+                        <div class="col-12">
+                            <h3 class="mb-1">{{ selectedProduct.price|int }} $</h3>
+                            <h6 class="text-3">Price inc. VAT*</h6>
+                        </div>
+                    </div>
+                    
+                    {% if selectedProduct.quantity == 0 %} 
+                        <button class="product-unavailable-button my-3">
+                            <h5>Out of stock</h5>
+                        </button>
+                    {% else %}
+                    <button class="product-button my-3" onclick="cartManager.addToCart({{ selectedProduct.id }})">
+                        <h5>Add to Bag</h5>
+                    </button>
+                    {% endif %}
+
+                    <div class="row my-4">
+                        <div class="col-12 d-flex gap-3">
+                            <div>
+                                <img class="icon-m" src="{{ url_for('static', filename='fonts/shipping_icon.svg') }}">
+                            </div>
+                            <div>
+                                <h5>From 2 working days</h5>
+                                <p>From 7.90 $</p>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/slick.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.fancybox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slick.settings.js') }}" type="module"></script>
+{% endblock %}

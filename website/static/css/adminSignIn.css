@@ -1,0 +1,50 @@
+.signIn
+{
+    text-align: center;
+    height: 70vh;
+}
+
+.signIn-window
+{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.signIn-input
+{
+    font-size: 20px;
+    height: 40px;
+    width: 100%;
+    background-color: var(--background-color1);
+    border: none;
+    border-bottom: 2px solid var(--text-color1);
+    outline: none;  
+}
+
+.signIn-submit-input
+{
+    /* font-size: 18px; */
+    height: 40px;
+    border: none;
+    border-radius: var(--border-radius1);
+    background-color: var(--background-color2);
+    width: 100%;
+}
+
+.forget-pass
+{
+    color: var(--text-color2);
+}
+
+.checkbox-div
+{
+    display: flex;
+    justify-content: left;
+    text-align: left;
+}
+
+.float_left
+{
+    float: left;
+}

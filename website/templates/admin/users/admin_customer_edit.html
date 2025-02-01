@@ -1,0 +1,470 @@
+{% extends "layouts/admin_base.html" %}
+
+{% block title %}
+{% if user %}{{ user.first_name }} {% else %}Add user{% endif %}
+{% endblock %}
+
+{% block head %} <!-- css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-3">
+    <div class="row">
+        <div class="d-flex justify-content-between align-items-end">
+            {% if user %}
+            <h2 class="category-title mt-3">Edit user</h2>
+            <div class="text-nowrap">
+                <button class="no-style-button" type="submit" form="editForm">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/checkmark_icon.svg') }}" alt="new">
+                </button>
+                <a href="/admin/customers">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="new">
+                </a>
+            </div>
+            {% else %}
+            <h2 class="category-title mt-3">Add user</h2>
+            <div class="text-nowrap">
+                <button class="no-style-button" type="submit" form="addForm">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/checkmark_icon.svg') }}" alt="new">
+                </button>
+                <a href="/admin/customers">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="new">
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mb-3">
+    <div class="row">
+
+        {% if user %}
+            <form id="editForm" class="base-form " action="/admin/customers/update/{{user.id}}" method="post">
+
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">First name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="first_name" class="base-input" name="_firstName" type="text" value="{{user.first_name}}" placeholder="First name">    
+                    </div>
+                </div>
+    
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="last_name">Last name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="last_name" class="base-input" name="_lastName" type="text" value="{{user.last_name}}" placeholder="Last name">    
+                    </div>
+                </div>
+    
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="email">Email</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="email" class="base-input" name="_email" type="text" value="{{user.email}}" placeholder="Email">
+                    </div>
+                </div>
+    
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="phone_number">Phone number</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="phone_number" class="base-input" name="_phoneNumber" type="tel" value="{{user.phone_number}}" placeholder="Phone number">
+                    </div>
+                </div>
+    
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="password">Password</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="password" class="base-input mb-4" name="_password" type="text" placeholder="Password">
+                        <input id="password_confirm" class="base-input" name="_password_confirm" type="text" placeholder="Password confirm">
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="account_balance">Account balance</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="account_balance" class="base-input" name="_account_balance" type="number" value="{{user.account_balance | int}}" placeholder="Account balance">
+                    </div>
+                </div>
+    
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label">Addresses</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        {% for i in range(user.address|length) %}
+                            {% if i == 0 %}
+                                <div class="address-container">
+                                    <h6 class="mb-4">Address 1</h6>
+                                    <input class="base-input mb-3" name="_address_line_1[]" type="text" value="{{user.address[i].address_line_1}}" placeholder="Street">
+                                    <input class="base-input mb-3" name="_address_line_2[]" type="text" value="{{user.address[i].address_line_2}}" placeholder="House no.">
+                                    <input class="base-input mb-3" name="_city[]"           type="text" value="{{user.address[i].city}}"           placeholder="City">
+                                    <input class="base-input mb-3" name="_postal_code[]"    type="text" value="{{user.address[i].postal_code}}"    placeholder="Postal code">
+                                    <input class="base-input mb-4" name="_country[]"        type="text" value="{{user.address[i].country}}"        placeholder="Country">
+                                </div>
+                            {% else %}
+                                <div class="address-container">
+                                    <div class="d-flex justify-content-between align-items-end mb-4">
+                                        <h6 class="address-title">Address {{i+1}}</h6>
+                                        <a class="delete-link">
+                                            <img class="icon-m" src="{{ url_for('static', filename = 'fonts/delete_icon.svg') }}" alt="delete">
+                                        </a>
+                                    </div>
+                                    <input class="base-input mb-3" name="_address_line_1[]" type="text" value="{{user.address[i].address_line_1}}" placeholder="Street">
+                                    <input class="base-input mb-3" name="_address_line_2[]" type="text" value="{{user.address[i].address_line_2}}" placeholder="House no.">
+                                    <input class="base-input mb-3" name="_city[]"           type="text" value="{{user.address[i].city}}"           placeholder="City">
+                                    <input class="base-input mb-3" name="_postal_code[]"    type="text" value="{{user.address[i].postal_code}}"    placeholder="Postal code">
+                                    <input class="base-input mb-4" name="_country[]"        type="text" value="{{user.address[i].country}}"        placeholder="Country">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                            <div id="new-address-button" class="add-new-category-div mb-4">
+                                <h6>New Address</h6>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label">Orders</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="table-wrapper p-2">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Items</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" class="col-disappear">Payment Method</th>
+                                        <th scope="col">Sub-Total</th>
+                                        <th scope="col" class="col-disappear">Shipping</th>
+                                        <th scope="col" class="col-disappear">Taxes</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col" class="col-disappear">Date Added</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in user.order_details %}         
+                                    <tr class="cursor-pointer" onclick="window.location='/admin/order/update/{{order.id}}';">
+                                        <th scope="row">{{ order.id }}</th>
+                                        <td>{{ order.order_items | length }}</td>
+                                        <td>{{ order.current_status | get_order_status_name_filter  }}</td>
+                                        <td class="col-disappear">{{ order.payment_details.method | get_order_payment_method_name_filter }}</td>
+                                        <td>${{ order.sub_total }} </td>
+                                        <td class="col-disappear">${{ order.shipping_cost }}</td>
+                                        <td class="col-disappear">${{ order.taxes_cost }}</td>
+                                        <td >${{ order.total_cost }}</td>
+                                        <td class="col-disappear">{{ order.created_at.strftime('%H:%M:%S, %d.%m.%Y') }}</td>
+                                    </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label">Shopping cart</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="table-wrapper p-2">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Color</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Unit Price</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>            
+                                    {% for cartItem in user.shopping_session.cart_items %}
+                                    <tr>
+                                        <th scope="row">{{ cartItem.product.id }}</th>
+                                        <td class="p-0">
+                                            <div class="table-image-div">
+                                                <img src="{{ url_for('static', filename='img/product_images/' + (cartItem.product.product_images|selectattr('is_main', 'equalto', True)|first).image_name ) }}" alt="">
+                                            </div>
+                                        </td>
+                                        <td>{{ cartItem.product.name }}</td>
+                                        <td>{{ cartItem.product.color }}</td>
+                                        <td>{{ cartItem.quantity }}</td>
+                                        <td>{{ cartItem.product.price }}</td>
+                                        <td>{{ cartItem.quantity*cartItem.product.price}}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="#">
+                                                    <img class="icon-m" src="{{ url_for('static', filename = 'fonts/delete_icon.svg') }}" alt="delete">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label">Liked</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="table-wrapper p-2">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>            
+
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td class="p-0">
+                                            <div class="table-image-div">
+                                                <img src="{{ url_for('static', filename='img/photos/photo1.png') }}" alt="">
+                                            </div>
+                                        </td>
+                                        <td>Varmilo Z87</td>
+                                        <td>$200</td>
+                                        <td>
+                                            <div class="d-flex align-items-center ">
+                                                <a href="#">
+                                                    <img class="icon-m" src="{{ url_for('static', filename = 'fonts/delete_icon.svg') }}" alt="delete">
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>  
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label">Reward points</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h6 class="mt-2 mb-4">Current balance: {{user.reward_points}} RP</h6>
+
+                        <div class="table-wrapper p-2 mb-4">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Date Added</th>
+                                        <th scope="col">Order ID</th>
+                                        <th scope="col">Reward Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>            
+                                    <tr>
+                                        <td>26.04.23</td>
+                                        <td>8</td>
+                                        <td>+900</td>
+                                    </tr>           
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <h5 class="mb-4">Add Reward Points</h5>
+                                <input form="reward-points-form" id="add_reward_points" class="base-input mb-4" type="number" name="_add_reward_points" placeholder="Points (use minus to remove points)">
+                                <button form="reward-points-form" type="submit" class="add-new-category-button mb-4">
+                                    <h6>Add points</h6>
+                                </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="enabled_label_1" class="add-product-label" for="enabled">Status</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="d-flex justify-content-start gap-4 align-items-center h-100">
+                            <div class="d-flex align-items-center gap-2">
+                                <input id="enabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{1}}" {% if user.is_enabled %} checked {% endif %}>
+                                <label id="enabled_label_2" class="add-product-label" for="enabled">Enabled</label>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <input id="disabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{0}}" {% if not(user.is_enabled) %} checked {% endif %}>
+                                <label id="disabled_label" class="add-product-label" for="disabled">Disabled</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form id="reward-points-form" action="/admin/customers/reward_points/{{ user.id }}" method="post"></form>
+        {% else %}
+        <!-- Default add form -->
+        <form id="addForm" class="base-form " action="/admin/customers" enctype="multipart/form-data" method="post">
+
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label class="add-product-label" for="first_name">First name</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <input id="first_name" class="base-input" name="_firstName" type="text" placeholder="First name">    
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label class="add-product-label" for="last_name">Last name</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <input id="last_name" class="base-input" name="_lastName" type="text" placeholder="Last name">    
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label class="add-product-label" for="email">Email</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <input id="email" class="base-input" name="_email" type="text" placeholder="Email">
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label class="add-product-label" for="phone_number">Phone number</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <input id="phone_number" class="base-input" name="_phoneNumber" type="tel" placeholder="Phone number">
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label class="add-product-label" for="password">Password</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <input id="password" class="base-input mb-4" name="_password" type="text" placeholder="Password">
+                    <input id="password_confirm" class="base-input" name="_password_confirm" type="text" placeholder="Password confirm">
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label class="add-product-label" for="account_balance">Account balance</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <input id="account_balance" class="base-input" name="_account_balance" type="number" placeholder="Account balance">
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label class="add-product-label">Addresses</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="address-container">
+                        <h6 class="mb-4">Address 1</h6>
+                        <input class="base-input mb-3" name="_address_line_1[]" type="text" placeholder="Street">
+                        <input class="base-input mb-3" name="_address_line_2[]" type="text" placeholder="House no.">
+                        <input class="base-input mb-3" name="_city[]"           type="text" placeholder="City">
+                        <input class="base-input mb-3" name="_postal_code[]"    type="text" placeholder="Postal code">
+                        <input class="base-input mb-4" name="_country[]"        type="text" placeholder="Country">
+                    </div>
+                    <div id="new-address-button" class="add-new-category-div mb-4">
+                        <h6>New Address</h6>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-md-2">
+                    <div class="add-product-label-div">
+                        <label id="enabled_label_1" class="add-product-label" for="enabled">Status</label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="d-flex justify-content-start gap-4 align-items-center h-100">
+                        <div class="d-flex align-items-center gap-2">
+                            <input id="enabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{1}}" checked>
+                            <label id="enabled_label_2" class="add-product-label" for="enabled">Enabled</label>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <input id="disabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{0}}">
+                            <label id="disabled_label" class="add-product-label" for="disabled">Disabled</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %} <!-- js -->
+<script src="{{ url_for('static', filename='js/adminEditUsers.js') }}"></script>
+{% endblock %}

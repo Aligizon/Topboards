@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Login{% endblock %}</title>
+    <!-- Bootstrap links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/icons/logo.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminHeader.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/commonStyles.css') }}">
+    {% block head %}
+
+    {% endblock %}
+    
+</head>
+
+<body class="body">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' or category == 'error' %}                
+                    <div class="custom-alert zindex-alert alert-{{category}} show">
+                        <h6>{{ message }}</h6>
+                        <button class="no-style-button close-button">
+                            <img class="icon-xs" onclick="closeAlert()" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="">
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+
+    <header id="header" class="zindex-header position-fixed">
+        <section class="mobile-header justify-content-center px-0 py-2">
+            <div class="logo">
+                <h1 class="logo-inscription">Topboards</h1>
+            </div>
+        </section>
+
+        <section class="desktop-header justify-content-center px-0 py-2">    
+            <div class="logo">
+                <h1 class="logo-inscription">Topboards</h1>
+            </div>
+        </section>
+    </header>
+
+   
+
+    <div id="wrapper" class="align-items-center">
+        <main class="main px-1">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

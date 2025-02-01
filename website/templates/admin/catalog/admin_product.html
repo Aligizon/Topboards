@@ -1,0 +1,522 @@
+    {% extends "layouts/admin_base.html" %}
+
+{% block title %}
+{% if product %}{{ product.name }}{% else %}Add product{% endif %}
+{% endblock %}
+
+{% block head %} <!-- css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="d-flex justify-content-between align-items-end">
+            {% if product %}
+            <h2 class="category-title mt-3">Edit product</h2>
+            <div class="text-nowrap">
+                <button class="no-style-button" type="submit" form="editForm">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/checkmark_icon.svg') }}" alt="new">
+                </button>
+                <a href="/admin/catalog">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="new">
+                </a>
+            </div>
+            {% else %}
+            <h2 class="category-title mt-3">Add product</h2>
+            <div class="text-nowrap">
+                <button class="no-style-button" type="submit" form="addForm">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/checkmark_icon.svg') }}" alt="new">
+                </button>
+                <a href="/admin/catalog">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="new">
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        {% if product %}
+            <form id="editForm" class="base-form " action="/admin/product/update/{{product.id}}" enctype="multipart/form-data" method="post">
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="prod_image_label" class="add-product-label" for="prod_main_image">Select Images</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h6 class="mb-2">Main Image</h6>
+                        <div id="edit-main-image-container" class="edit-image-container mb-3">
+                            {% if product.product_images %}
+                                <div class="edit-image-div">
+                                    <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name) }}" alt="Image">
+                                </div>
+                            {% else %}
+                                <div class="edit-image-div">
+                                    <div class="edit-image-template-div">
+                                        <img src="{{ url_for('static', filename = 'fonts/background_icon.svg') }}" alt="Image">
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <input id="prod_main_image" class="d-none" name="prod_main_image" type="file" accept=".jpg, .png, image/jpeg, image/png">
+                        </div>
+                        <h6 class="mb-2">Additional Images</h6>
+                        <div id="edit-additional-images-container" class="edit-image-container mb-3">
+                            {% if product.product_images[1] %}
+                                {% for image in product.product_images %}
+                                    {% if image.is_main == False %}
+                                        <div class="edit-image-div">
+                                            <img src="{{ url_for('static', filename='img/product_images/' + image.image_name) }}" alt="Image">
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <div class="edit-image-div">
+                                    <div class="edit-image-template-div">
+                                        <img src="{{ url_for('static', filename = 'fonts/background_icon.svg') }}" alt="Image">
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <input id="prod_images" class="d-none" name="product_img[]" type="file" multiple="multiple" accept=".jpg, .png, image/jpeg, image/png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="name_label" class="add-product-label" for="name">Product Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="name" class="base-input" name="_name" type="text" placeholder="Product Name" value="{{ product.name }}">    
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="description_label" class="add-product-label" for="description">Description</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <textarea id="description" class="add-product-textarea" name="_description" type="text" placeholder="Description" for="editForm">{{ product.desc }}</textarea>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="model_label" class="add-product-label" for="model">Model</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="model" class="base-input" name="_model" type="text" placeholder="Model" value="{{ product.model }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="category_label" class="add-product-label" for="category">Category</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="category" class="base-input" name="_category" type="text" placeholder="Category" value="{{ product.category }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="brand_label" class="add-product-label" for="brand">Brand</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="brand" class="base-input" name="_brand" type="text" placeholder="Brand" value="{{ product.brand }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="switches_label" class="add-product-label" for="switches">Switches</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="switches" class="base-input" name="_switches" type="text" placeholder="Switches" value="{{ product.switches }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="color_label" class="add-product-label" for="color">Color</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="color" class="base-input" name="_color" type="text" placeholder="Color name" value="{{ product.color }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="color_HEX_label" class="add-product-label" for="color_HEX">Color HEX</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="color_HEX" class="base-input" name="_color_HEX" type="text" placeholder="#FFFFFF" value="{{ product.color_HEX }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="SKU_label" class="add-product-label" for="SKU">SKU</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="SKU" class="base-input" name="_SKU" type="text" placeholder="SKU" value="{{ product.SKU }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="quantity_label" class="add-product-label" for="quantity">Quantity</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="quantity" class="base-input" name="_quantity" type="number" placeholder="Quantity" value="{{ product.quantity }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="formFactor_label" class="add-product-label" for="formFactor">Form Factor</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="formFactor" class="base-input" name="_formFactor" type="text" placeholder="Form Factor" value="{{ product.form_factor }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="dimensions_label" class="add-product-label" for="dimensions">Dimensions</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="dimensions" class="base-input" name="_dimensions" type="text" placeholder="Dimensions (L x W x H)" value="{{ product.dimensions }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="weight_label" class="add-product-label" for="weight">Weight</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="weight" class="base-input" name="_weight" type="number" placeholder="Weight (kg)" step="0.001" value="{{ product.weight }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="cost_label" class="add-product-label" for="cost">Cost</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="cost" class="base-input" name="_cost" type="number" placeholder="Cost (purchase price)" step="0.01" value="{{ product.cost }}">
+                    </div>
+                </div>
+                
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="withoutTax_label" class="add-product-label" for="withoutTax">Price without Tax</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="withoutTax" class="base-input" name="_withoutTax" type="number" placeholder="Price without Tax" step="0.01" value="{{ product.price_without_tax }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="price_label" class="add-product-label" for="price">Price</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="price" class="base-input" name="_price" type="number" placeholder="Price" step="0.01" value="{{ product.price }}">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="enabled_label" class="add-product-label" for="enabled">Status</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="d-flex justify-content-start gap-4 align-items-center h-100">
+                            <div class="d-flex align-items-center gap-2">
+                                <input id="enabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{1}}" {% if product.is_enabled %} checked {% endif %}>
+                                <label id="enabled_label" class="add-product-label" for="enabled">Enabled</label>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <input id="disabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{0}}" {% if not(product.is_enabled) %} checked {% endif %}>
+                                <label id="disabled_label" class="add-product-label" for="disabled">Disabled</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% else %}
+        <!-- Default add form -->
+            <form id="addForm" class="base-form " action="/admin/catalog" enctype="multipart/form-data" method="post">
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="prod_image_label" class="add-product-label" for="prod_main_image">Select Images</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h6 class="mb-2">Main Image</h6>
+                        <div id="edit-main-image-container" class="edit-image-container mb-3">
+                            <div class="edit-image-div">
+                                <div class="edit-image-template-div">
+                                    <img src="{{ url_for('static', filename = 'fonts/background_icon.svg') }}" alt="Image">
+                                </div>
+                            </div>
+                            <input id="prod_main_image" class="d-none" name="prod_main_image" type="file" accept=".jpg, .png, image/jpeg, image/png">
+                        </div>
+                        <h6 class="mb-2">Additional Images</h6>
+                        <div id="edit-additional-images-container" class="edit-image-container mb-3">
+                            <div class="edit-image-div">
+                                <div class="edit-image-template-div">
+                                    <img src="{{ url_for('static', filename = 'fonts/background_icon.svg') }}" alt="Image">
+                                </div>
+                            </div>
+                            <input id="prod_images" class="d-none" name="product_img[]" type="file" multiple="multiple" accept=".jpg, .png, image/jpeg, image/png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="name_label" class="add-product-label" for="name">Product Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="name" class="base-input" name="_name" type="text" placeholder="Product Name">    
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="description_label" class="add-product-label" for="description">Description</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <textarea id="description" class="add-product-textarea" name="_description" type="text" placeholder="Description" for="addForm"></textarea>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="model_label" class="add-product-label" for="model">Model</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="model" class="base-input" name="_model" type="text" placeholder="Model">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="category_label" class="add-product-label" for="category">Category</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="category" class="base-input" name="_category" type="text" placeholder="Category">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="brand_label" class="add-product-label" for="brand">Brand</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="brand" class="base-input" name="_brand" type="text" placeholder="Brand">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="switches_label" class="add-product-label" for="switches">Switches</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="switches" class="base-input" name="_switches" type="text" placeholder="Switches">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="color_label" class="add-product-label" for="color">Color</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="color" class="base-input" name="_color" type="text" placeholder="Color">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="color_HEX_label" class="add-product-label" for="color_HEX">Color HEX</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="color_HEX" class="base-input" name="_color_HEX" type="text" placeholder="#FFFFFF">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="SKU_label" class="add-product-label" for="SKU">SKU</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="SKU" class="base-input" name="_SKU" type="text" placeholder="SKU">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="quantity_label" class="add-product-label" for="quantity">Quantity</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="quantity" class="base-input" name="_quantity" type="number" placeholder="Quantity">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="formFactor_label" class="add-product-label" for="formFactor">Form Factor</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="formFactor" class="base-input" name="_formFactor" type="text" placeholder="Form Factor">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="dimensions_label" class="add-product-label" for="dimensions">Dimensions</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="dimensions" class="base-input" name="_dimensions" type="text" placeholder="Dimensions (L x W x H)">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="weight_label" class="add-product-label" for="weight">Weight</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="weight" class="base-input" name="_weight" type="number" placeholder="Weight (kg)" step="0.001">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="cost_label" class="add-product-label" for="cost">Cost</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="cost" class="base-input" name="_cost" type="number" placeholder="Cost (purchase price)" step="0.01">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="withoutTax_label" class="add-product-label" for="withoutTax">Price without Tax</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="withoutTax" class="base-input" name="_withoutTax" type="number" placeholder="Price without Tax" step="0.01">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="price_label" class="add-product-label" for="price">Price</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="price" class="base-input" name="_price" type="number" placeholder="Price" step="0.01">
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label id="enabled_label" class="add-product-label" for="enabled">Status</label>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="d-flex justify-content-start gap-4 align-items-center h-100">
+                            <div class="d-flex align-items-center gap-2">
+                                <input id="enabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{1}}">
+                                <label id="enabled_label" class="add-product-label" for="enabled">Enabled</label>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <input id="disabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{0}}" checked>
+                                <label id="disabled_label" class="add-product-label" for="disabled">Disabled</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %} <!-- js -->
+    <script src="{{ url_for('static', filename='js/adminProduct.js') }}"></script>
+{% endblock %}

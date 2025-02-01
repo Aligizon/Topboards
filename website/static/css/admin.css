@@ -1,0 +1,384 @@
+/*----------------------------------------Common Elements----------------------------------------*/
+
+@keyframes add-product-animation {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+.confirm-button-div {
+    text-align: center;
+    padding: 5px 10px;
+    border: 1px solid var(--text-color1);
+    border-radius: var(--border-radius2);
+    cursor: pointer;
+}
+.confirm-button-div:hover {
+    transition: 0.25s ease;
+    background-color: var(--text-color1);
+    color: var(--background-color1);
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------Admin Control Panel----------------------------------------*/
+
+.content {
+    text-align: center;
+}
+
+.metrics-wrapper
+{
+    clear: left;
+    display: inline-block;
+    position: relative;
+}
+
+.metrics-wrapper h1
+{
+    font-size: 36px;
+}
+.metrics-wrapper span
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(0, 163, 0);
+    border-radius: 50%;
+    position: absolute;
+    right: -65px;
+    top: 2px;
+}
+
+.table-wrapper
+{
+    min-height: 300px;
+    border-radius: var(--border-radius1);
+    background-color: var(--background-color2);
+    width: 100%;
+}
+
+.low-table-wrapper
+{
+    border-radius: var(--border-radius1);
+    background-color: var(--background-color2);
+    width: 100%;
+}
+
+.table-dark {
+    --bs-table-color: #fff;
+    --bs-table-bg: var(--background-color2);
+    --bs-table-border-color: var(--background-color2);
+    --bs-table-striped-bg: #2c3034;
+    --bs-table-striped-color: #fff;
+    --bs-table-active-bg: #373b3e;
+    --bs-table-active-color: #fff;
+    --bs-table-hover-bg: #323539;
+    --bs-table-hover-color: #fff;
+    color: var(--text-color1);
+}
+/*-----------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------Catalog / Product Page----------------------------------------*/
+#confirmDeleteModal {
+    --bs-modal-header-border-color: none;
+    --bs-modal-border-color: var(--text-color2);
+    --bs-modal-border-radius: var(--border-radius2);
+}
+
+.category-title {
+    font-size: max(2em, 20px);
+}
+
+#prod_img_label {
+    color: #757575;
+    cursor: pointer;
+}
+
+.edit-image-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid var(--text-color3);
+    border-radius: var(--border-radius1);
+    padding: 20px 10px;
+    cursor: pointer;
+}
+
+.table-image-div {
+    width: 70px;
+    height: 40px;
+}
+
+.edit-image-template-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--text-color3);
+    border-radius: var(--border-radius1);
+}
+
+.edit-image-div{
+    width: 210px;
+    height: 120px;
+}
+
+.table-image-div > img, .edit-image-div > img {
+    border-radius: var(--border-radius1);
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.add-product-textarea {
+    width: 100%;
+    height: 200px;
+    background-color: var(--background-color1);
+    border: none;
+    outline: none;
+    border-radius: var(--border-radius1);
+    padding: 8px 6px;
+    border: 1px solid var(--text-color3);
+    resize: none;
+}
+
+.add-product-radio{
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.1em;
+    height: 1.1em;
+    border: 0.15em solid currentColor;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+}
+
+.add-product-radio::before {
+    content: "";
+    width: 0.75em;
+    height: 0.75em;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em black;
+  }
+
+.add-product-radio:checked::before {
+    transform: scale(1);
+}
+
+.add-product-checkbox {
+    width: 15px;
+    height: 15px;
+}
+
+.add-product-label-div
+{
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    align-items: center;
+    background-color: var(--background-color1);
+}
+
+.add-product-label {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.add-product-submit-input
+{
+    height: 40px;
+    border: none;
+    border-radius: var(--border-radius2);
+    background-color: var(--background-color2);
+    width: 100%;
+}
+
+input[type="number"] {
+    -webkit-appearance: textfield;
+       -moz-appearance: textfield;
+            appearance: textfield;
+  }
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+  }
+
+/*------------------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------Categories Page----------------------------------------*/
+.category-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.sub-category-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/*styled button that adds new category input*/ 
+
+.add-new-category-div {
+    padding: 6px;
+    border: 1px solid var(--text-color1);
+    border-radius: var(--border-radius1);
+    text-align: center;
+    overflow-x: hidden;
+    max-width: 250px;
+    cursor: pointer;
+}
+.add-new-category-div:hover {
+    opacity: 0.8;
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------Main Page Constructor----------------------------------------*/
+.checkbox-input
+{
+    accent-color: var(--text-color1);
+    background-color: black;
+    outline: none;  
+}
+
+.search-box
+{
+    background-color: var(--background-color3);
+    color: var(--text-color-black);
+    border-radius: var(--border-radius3);
+    width: 100%;
+    padding: 5px 10px;
+    outline: none;
+}
+
+.modal-button {
+    opacity: .5;
+    outline: none;
+}
+.modal-button:hover {
+    opacity: .75;
+}
+
+.modal-button:focus {
+    border: 0px solid;
+    opacity: 1;
+    box-shadow: inset 0 0 0 4px #4F4F4F;
+    border-radius: 8px;
+}
+/*-----------------------------------------------------------------------------------------------------*/
+
+@media (max-width: 1200px) {
+    .col-disappear {
+        display: none;
+    }
+}
+
+@media (max-width: 992px) {
+    .table-wrapper {
+        overflow: scroll;
+    }
+    .low-table-wrapper {
+        overflow: scroll;
+    }
+}
+
+/*----------------------------------------User Pages----------------------------------------*/
+.add-new-category-button {
+    width: 100%;
+    padding: 5px 10px;
+    border: 1px solid var(--text-color1);
+    background-color: transparent;
+    border-radius: var(--border-radius1);
+    text-align: center;
+    overflow-x: hidden;
+    max-width: 200px;
+}
+.add-new-category-button:hover {
+    opacity: 0.8;
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------Order Page----------------------------------------*/
+.user-modal, .product-modal {
+    --bs-modal-width: 650px;
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Hide the default checkbox */
+.custom-checkbox input {
+    display: none; /* Hide the checkbox */
+}
+
+/* Create a custom checkmark */
+.custom-checkbox {
+    position: relative;
+    padding-left: 35px; /* Space for custom checkbox */
+    cursor: pointer; /* Cursor style */
+    user-select: none; /* Prevent text selection */
+}
+
+/* Custom checkmark styling */
+.custom-checkbox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px; /* Height of checkbox */
+    width: 20px; /* Width of checkbox */
+    background-color: #eee; /* Default background */
+    border-radius: 4px; /* Rounded corners */
+    border: 2px solid #ccc; /* Border */
+    transition: background-color 0.3s, border 0.3s; /* Transition effects */
+}
+
+/* Change background on hover */
+.custom-checkbox:hover .checkmark {
+    background-color: #ddd; /* Hover background */
+}
+
+/* Checkmark appearance when checked */
+.custom-checkbox input:checked + .checkmark {
+    background-color: #4CAF50; /* Background when checked */
+    border-color: #4CAF50; /* Border color when checked */
+}
+
+/* Create the checkmark/indicator */
+.custom-checkbox input:checked + .checkmark:after {
+    content: "";
+    position: absolute;
+    left: 7px; /* Positioning of checkmark */
+    top: 2px; /* Positioning of checkmark */
+    width: 5px; /* Width of checkmark */
+    height: 10px; /* Height of checkmark */
+    border: solid white; /* Checkmark color */
+    border-width: 0 2px 2px 0; /* Checkmark border width */
+    transform: rotate(45deg); /* Rotate to form a checkmark */
+}

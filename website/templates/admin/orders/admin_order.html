@@ -1,0 +1,782 @@
+{% extends "layouts/admin_base.html" %}
+
+{% block title %}
+{% if order %}Order №{{ order.id }}{% else %}New order{% endif %}
+{% endblock %}
+
+{% block head %} <!-- css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="d-flex justify-content-between align-items-end">
+            {% if order %}
+            <h2 class="category-title mt-3">Edit order</h2>
+            <div class="text-nowrap">
+                <button class="no-style-button" type="submit" form="editForm">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/checkmark_icon.svg') }}" alt="new">
+                </button>
+                <a href="/admin/orders">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="new">
+                </a>
+            </div>
+            {% else %}
+            <h2 class="category-title mt-3">Add order</h2>
+            <div class="text-nowrap">
+                <button class="no-style-button" type="submit" form="addForm">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/checkmark_icon.svg') }}" alt="new">
+                </button>
+                <a href="/admin/orders">
+                    <img class="icon-xxl" src="{{ url_for('static', filename = 'fonts/close_icon.svg') }}" alt="new">
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        {% if order %}
+            <form id="editForm" class="base-form" action="/admin/order/update/{{order.id}}" enctype="multipart/form-data" method="post">
+               
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="order_number">Order Info</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <h6 class="mb-2">Number</h6>
+                        <p id="order_number" class="base-input mb-4">{{order.id}}</p>    
+
+                        <h6 class="mb-2">Date Added</h6>
+                        <p id="date_added" class="base-input mb-4">{{order.created_at.strftime('%H:%M:%S, %d.%m.%Y')}}</p>
+
+                        <h6 class="mb-2">Payment Method</h6>
+                        <div class="custom-select-container mb-4">
+                            <div class="custom-select">
+                                <span class="selected-option">Select Payment Method</span>
+                                <div class="options-list">
+                                    {% for method in PaymentMethod %}
+                                        <div class="option" data-value="{{ method.value }}">{{ method.name}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input id="payment-method-select" type="hidden" name="_payment_method" value="{{ order.payment_details.method }}">
+                        </div>
+
+                        <h6 class="mb-2">Shipping Method</h6>
+                        <div class="custom-select-container mb-2">
+                            <div class="custom-select">
+                                <span class="selected-option">Select Shipping Method</span>
+                                <div class="options-list">
+                                    {% for method in ShippingMethod %}
+                                        <div class="option" data-value="{{ method.value }}">{{ method.name}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input id="shipping-method-select" type="hidden" name="_shipping_method" value="{{ order.shipping_details.method }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">Customer Info</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div id="guest-user-inputs">
+                            <h6 class="mb-2">First Name</h6>
+                            <input id="first_name" class="base-input mb-4" name="_firstName" type="text" placeholder="First name">    
+
+                            <h6 class="mb-2">Last Name</h6>
+                            <input id="last_name" class="base-input mb-4" name="_lastName" type="text" placeholder="Last name">    
+
+                            <h6 class="mb-2">Email</h6>
+                            <input id="email" class="base-input mb-4" name="_email" type="text" placeholder="Email">
+
+                            <h6 class="mb-2">Phone Number</h6>
+                            <input id="phone_number" class="base-input mb-4" name="_phoneNumber" type="tel" placeholder="Phone number">
+                            
+                            <h6 class="mb-4">Or select an existing user</h6>
+                        </div>
+                        <div id="existing-user-table" class="d-none">
+                            <div class="low-table-wrapper p-2 mb-4">
+                                <table class="table table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col" class="col-disappear">Phone Number</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="user-name-col"></td>
+                                            <td id="user-email-col"></td> 
+                                            <td id="user-phone-number-col" class="col-disappear"></td>
+                                            <td id="user-type-col"></td>
+                                            <td id="user-cancel-col">
+                                                <img class="icon-s" src="{{ url_for('static', filename = 'fonts/cancel_icon.svg') }}" alt="cancel">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <button type="button" class="add-new-category-button mb-4" data-bs-toggle="modal" data-bs-target="#selectUserModal">
+                            <h6>Select User</h6>
+                        </button>
+                        <input id="user_id" type="hidden" name="_userId" value="{{ order.user.id }}">
+
+
+                        <div class="modal user-modal fade" id="selectUserModal" tabindex="-1" aria-labelledby="selectUserModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content bg-1">
+                                    
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="selectUserModalLabel">Select User</h5>                                    
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <input type="text" class="search-box" placeholder="Search...">
+                                        </div>
+
+                                        <div class="table-wrapper">
+                                            <table class="table table-dark">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Email</th>
+                                                        <th scope="col">Phone Number</th>
+                                                        <th scope="col">Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user in users %}
+                                                    <tr class="user-row cursor-pointer" data-bs-dismiss="modal"
+                                                                                        data-id="{{user.id}}"
+                                                                                        data-firstName="{{user.first_name}}"
+                                                                                        data-lastName="{{user.last_name}}"
+                                                                                        data-email="{{user.email}}" 
+                                                                                        data-phoneNumber="{{user.phone_number}}"
+                                                                                        data-userType="{{user.type | get_user_type_name_filter}}">
+                                                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                                        <td>{{ user.email }}</td>
+                                                        <td>{{ user.phone_number }}</td>
+                                                        <td>{{ user.type | get_user_type_name_filter }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">Address</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="row gy-4">
+                            <div class="col-sm-6 ps-0 pe-0 pe-sm-3">
+                                <h6 class="mb-2">Billing Address</h6>
+                                <input class="base-input mb-2" name="_billing_address_line_1"      type="text" value="{{order.payment_details.billing_address.address_line_1}}" placeholder="Street">
+                                <input class="base-input mb-2" name="_billing_address_line_2"      type="text" value="{{order.payment_details.billing_address.address_line_2}}" placeholder="House no.">
+                                <input class="base-input mb-2" name="_billing_address_city"        type="text" value="{{order.payment_details.billing_address.city}}"           placeholder="City">
+                                <input class="base-input mb-2" name="_billing_address_postal_code" type="text" value="{{order.payment_details.billing_address.postal_code}}"    placeholder="Postal code">
+                                <input class="base-input mb-2" name="_billing_address_country"     type="text" value="{{order.payment_details.billing_address.country}}"        placeholder="Country">
+                            </div>
+                            <div class="col-sm-6 pe-0 ps-0 ps-sm-3">
+                                <h6 class="mb-2">Shipping Address</h6>
+                                <input class="base-input mb-2" name="_shipping_address_line_1"      type="text" value="{{order.shipping_details.shipping_address.address_line_1}}" placeholder="Street">
+                                <input class="base-input mb-2" name="_shipping_address_line_2"      type="text" value="{{order.shipping_details.shipping_address.address_line_2}}" placeholder="House no.">
+                                <input class="base-input mb-2" name="_shipping_address_city"        type="text" value="{{order.shipping_details.shipping_address.city}}"           placeholder="City">
+                                <input class="base-input mb-2" name="_shipping_address_postal_code" type="text" value="{{order.shipping_details.shipping_address.postal_code}}"    placeholder="Postal code">
+                                <input class="base-input mb-2" name="_shipping_address_country"     type="text" value="{{order.shipping_details.shipping_address.country}}"        placeholder="Country">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">Products</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div id="order-products-table" class="low-table-wrapper p-2 mb-4 d-none">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Unit Price</th>
+                                        <th scope="col">Cost</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">
+                                            <div class="d-flex justify-content-center">
+                                                Actions
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="insert-product-rows-before-me"> 
+                                        <td>Sub-Total</td>
+                                        <td id="sub-total-price-col">$0</td>
+                                    </tr>  
+                                    <tr>
+                                        <td>Shipping</td> 
+                                        <td id="shipping-price-col">$0</td>
+                                    </tr>  
+                                    <tr>
+                                        <td>Taxes</td> 
+                                        <td id="taxes-price-col">$0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total</td> 
+                                        <td id="total-price-col">$0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> 
+
+                        <button type="button" class="add-new-category-button mb-4" data-bs-toggle="modal" data-bs-target="#addProductsModal">
+                            <h6>Add Products</h6>
+                        </button>
+                        <input id="productID_productQuantity[]" type="hidden" name="_productID_productQuantity[]"
+                        value="[{% for i in range(order.order_items | length) %} 
+                                [{{order.order_items[i].product_id}}, {{order.order_items[i].quantity}}]{% if not loop.last %}, {% endif %}
+                                {% endfor %}]">
+
+                        <div class="modal product-modal fade" id="addProductsModal" tabindex="-1" aria-labelledby="addProductsModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content bg-1">
+                                    
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addProductsModalLabel">Add Products</h5>                                    
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <input type="text" class="search-box" placeholder="Search...">
+                                        </div>
+
+                                        <div class="table-wrapper">
+                                            <table class="table table-dark">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Image</th>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Color</th>
+                                                        <th scope="col">Switches</th>
+                                                        <th scope="col">Price</th>
+                                                        <th scope="col">Quantity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for product in products %}
+                                                        <tr class="cursor-pointer">
+                                                            <td>
+                                                                <div class="table-image-div">
+                                                                    <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name)}}" alt="Image">
+                                                                </div>
+                                                            </td>
+                                                            <td>{{ product.name }}</td>
+                                                            <td>{{ product.color }}</td>
+                                                            <td>{{ product.switches }}</td>
+                                                            <td>${{ product.price }}</td>
+                                                            <td>
+                                                                {% set image_name = (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name %}
+                                                                <div class="product-quantity-div"
+                                                                     data-id="{{ product.id }}" 
+                                                                     data-image-name="{{ image_name }}" 
+                                                                     data-name="{{ product.name }}" 
+                                                                     data-price="{{ product.price }}" 
+                                                                     data-cost="{{ product.cost }}">
+
+                                                                    <span class="decrease-quantity-button">
+                                                                        <h6><</h6>
+                                                                    </span>
+                                                                    <span>
+                                                                        <h6 class="product-counter">0</h6>
+                                                                    </span>
+                                                                    <span class="increase-quantity-button">
+                                                                        <h6>></h6>
+                                                                    </span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">Order Status</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">  
+                        <div class="table-wrapper p-2 mb-4">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Date Modified</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Customer Notified</th>
+                                        <th scope="col">Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for status_record in order.status_history %}
+                                    <tr>
+                                        <td>{{ status_record.created_at.strftime('%H:%M:%S, %d.%m.%Y') }}</td>
+                                        <td>{{ status_record.new_status | get_order_status_name_filter  }}</td>
+                                        <td>{% if status_record.customer_notified %}Yes{% else %}No{% endif %}</td>
+                                        <td>{{ status_record.comment}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="notify">Update Status</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <h6 class="mb-2">Status</h6>
+                        <div class="custom-select-container mb-4">
+                            <div class="custom-select">
+                                <span class="selected-option">Select Status</span>
+                                <div class="options-list">
+                                    {% for status in OrderStatus %}
+                                        <div class="option" data-value="{{ status.value }}">{{ status.name }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input id="status-select" type="hidden" name="_status_update_new_status" value="{{ order.current_status }}">
+                        </div>
+
+                        <h6 class="mb-2">Notify Customer</h6>
+                        <input id="notify" class="add-product-checkbox mb-4" name="_status_update_notify" type="checkbox" value="1">
+
+                        <h6 class="mb-2">Comment</h6>
+                        <textarea id="comment" class="add-product-textarea" name="_status_update_comment" type="text" placeholder="Comment" for="editForm"></textarea>                    
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="reward_points">Reward Points</label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-10">
+                        <p id="reward_points" class="base-input mb-4" name="_reward_points" type="text" placeholder="Reward points">{{order.reward_points}}</p> 
+                    </div>
+                </div>
+            </form>
+        {% else %}
+        <!-- Default add form -->
+            <form id="addForm" class="base-form " action="/admin/order" enctype="multipart/form-data" method="post">
+                
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="order_number">Order Info</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <h6 class="mb-2">Payment Method</h6>
+                        <div class="custom-select-container mb-4">
+                            <div class="custom-select">
+                                <span class="selected-option">Select Payment Method</span>
+                                <div class="options-list">
+                                    {% for method in PaymentMethod %}
+                                        <div class="option" data-value="{{ method.value }}">{{ method.name }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input id="payment-method-select" type="hidden" name="_payment_method">
+                        </div>
+
+                        <h6 class="mb-2">Shipping Method</h6>
+                        <div class="custom-select-container mb-2">
+                            <div class="custom-select">
+                                <span class="selected-option">Select Shipping Method</span>
+                                <div class="options-list">
+                                    {% for method in ShippingMethod %}
+                                        <div class="option" data-value="{{ method.value }}">{{ method.name}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input id="shipping-method-select" type="hidden" name="_shipping_method">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">Customer Info</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div id="guest-user-inputs">
+                            <h6 class="mb-2">First Name</h6>
+                            <input id="first_name" class="base-input mb-4" name="_firstName" type="text" placeholder="First name">    
+
+                            <h6 class="mb-2">Last Name</h6>
+                            <input id="last_name" class="base-input mb-4" name="_lastName" type="text" placeholder="Last name">    
+
+                            <h6 class="mb-2">Email</h6>
+                            <input id="email" class="base-input mb-4" name="_email" type="text" placeholder="Email">
+
+                            <h6 class="mb-2">Phone Number</h6>
+                            <input id="phone_number" class="base-input mb-4" name="_phoneNumber" type="tel" placeholder="Phone number">
+                            
+                            <h6 class="mb-4">Or select an existing user</h6>
+                        </div>
+                        <div id="existing-user-table" class="d-none">
+                            <div class="low-table-wrapper p-2 mb-4">
+                                <table class="table table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col" class="col-disappear">Phone Number</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="user-name-col"></td>
+                                            <td id="user-email-col"></td> 
+                                            <td id="user-phone-number-col" class="col-disappear"></td>
+                                            <td id="user-type-col"></td>
+                                            <td id="user-cancel-col">
+                                                <img class="icon-s" src="{{ url_for('static', filename = 'fonts/cancel_icon.svg') }}" alt="cancel">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <button type="button" class="add-new-category-button mb-4" data-bs-toggle="modal" data-bs-target="#selectUserModal">
+                            <h6>Select User</h6>
+                        </button>
+                        <input id="user_id" type="hidden" name="_userId">
+
+
+                        <div class="modal user-modal fade" id="selectUserModal" tabindex="-1" aria-labelledby="selectUserModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content bg-1">
+                                    
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="selectUserModalLabel">Select User</h5>                                    
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <input type="text" class="search-box" placeholder="Search...">
+                                        </div>
+
+                                        <div class="table-wrapper">
+                                            <table class="table table-dark">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Email</th>
+                                                        <th scope="col">Phone Number</th>
+                                                        <th scope="col">Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user in users %}
+                                                    <tr class="user-row cursor-pointer" data-bs-dismiss="modal"
+                                                                                        data-id="{{user.id}}"
+                                                                                        data-firstName="{{user.first_name}}"
+                                                                                        data-lastName="{{user.last_name}}"
+                                                                                        data-email="{{user.email}}" 
+                                                                                        data-phoneNumber="{{user.phone_number}}"
+                                                                                        data-userType="{{user.type | get_user_type_name_filter}}">
+                                                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                                        <td>{{ user.email }}</td>
+                                                        <td>{{ user.phone_number }}</td>
+                                                        <td>{{ user.type | get_user_type_name_filter }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">Address</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="row gy-4">
+                            <div class="col-sm-6 ps-0 pe-0 pe-sm-3">
+                                <h6 class="mb-2">Billing Address</h6>
+                                <input class="base-input mb-2" name="_billing_address_line_1"       type="text" placeholder="Street">
+                                <input class="base-input mb-2" name="_billing_address_line_2"       type="text" placeholder="House no.">
+                                <input class="base-input mb-2" name="_billing_address_city"         type="text" placeholder="City">
+                                <input class="base-input mb-2" name="_billing_address_postal_code"  type="text" placeholder="Postal code">
+                                <input class="base-input mb-2" name="_billing_address_country"      type="text" placeholder="Country">
+                            </div>
+                            <div class="col-sm-6 pe-0 ps-0 ps-sm-3">
+                                <h6 class="mb-2">Shipping Address</h6>
+                                <input class="base-input mb-2" name="_shipping_address_line_1"      type="text" placeholder="Street">
+                                <input class="base-input mb-2" name="_shipping_address_line_2"      type="text" placeholder="House no.">
+                                <input class="base-input mb-2" name="_shipping_address_city"        type="text" placeholder="City">
+                                <input class="base-input mb-2" name="_shipping_address_postal_code" type="text" placeholder="Postal code">
+                                <input class="base-input mb-2" name="_shipping_address_country"     type="text" placeholder="Country">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="first_name">Products</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">  
+                        <div id="order-products-table" class="low-table-wrapper p-2 mb-4 d-none">
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Unit Price</th>
+                                        <th scope="col">Cost</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">
+                                            <div class="d-flex justify-content-center">
+                                                Actions
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="insert-product-rows-before-me"> 
+                                        <td>Sub-Total</td>
+                                        <td id="sub-total-price-col">$0</td>
+                                    </tr>  
+                                    <tr>
+                                        <td>Shipping</td> 
+                                        <td id="shipping-price-col">$0</td>
+                                    </tr>  
+                                    <tr>
+                                        <td>Taxes</td> 
+                                        <td id="taxes-price-col">$0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total</td> 
+                                        <td id="total-price-col">$0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> 
+
+                        <button type="button" class="add-new-category-button mb-4" data-bs-toggle="modal" data-bs-target="#addProductsModal">
+                            <h6>Add Products</h6>
+                        </button>
+                        <input id="productID_productQuantity[]" type="hidden" name="_productID_productQuantity[]"> 
+
+
+                        <div class="modal product-modal fade" id="addProductsModal" tabindex="-1" aria-labelledby="addProductsModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content bg-1">
+                                    
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addProductsModalLabel">Add Products</h5>                                    
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <input type="text" class="search-box" placeholder="Search...">
+                                        </div>
+
+                                        <div class="table-wrapper">
+                                            <table class="table table-dark">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Image</th>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Color</th>
+                                                        <th scope="col">Switches</th>
+                                                        <th scope="col">Price</th>
+                                                        <th scope="col">Quantity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for product in products %}
+                                                        <tr class="cursor-pointer">
+                                                            <td>
+                                                                <div class="table-image-div">
+                                                                    <img src="{{ url_for('static', filename='img/product_images/' + (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name)}}" alt="Image">
+                                                                </div>
+                                                            </td>
+                                                            <td>{{ product.name }}</td>
+                                                            <td>{{ product.color }}</td>
+                                                            <td>{{ product.switches }}</td>
+                                                            <td>${{ product.price }}</td>
+                                                            <td>
+                                                                {% set image_name = (product.product_images|selectattr('is_main', 'equalto', True)|first).image_name %}
+                                                                <div class="product-quantity-div"
+                                                                     data-id="{{ product.id }}" 
+                                                                     data-image-name="{{ image_name }}" 
+                                                                     data-name="{{ product.name }}" 
+                                                                     data-price="{{ product.price }}" 
+                                                                     data-cost="{{ product.cost }}">
+
+                                                                    <span class="decrease-quantity-button">
+                                                                        <h6><</h6>
+                                                                    </span>
+                                                                    <span>
+                                                                        <h6 class="product-counter">0</h6>
+                                                                    </span>
+                                                                    <span class="increase-quantity-button">
+                                                                        <h6>></h6>
+                                                                    </span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="notify">Order Status</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <h6 class="mb-2">Status</h6>
+                        <div class="custom-select-container mb-4">
+                            <div class="custom-select">
+                                <span class="selected-option">Select Status</span>
+                                <div class="options-list">
+                                    {% for status in OrderStatus %}
+                                        <div class="option" data-value="{{ status.value }}">{{ status.name }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input id="status-select" type="hidden" name="_status_update_new_status">
+                        </div>
+
+                        <h6 class="mb-2">Notify Customer</h6>
+                        <input id="notify" class="add-product-checkbox mb-4" name="_status_update_notify" type="checkbox" value="1">
+
+                        <h6 class="mb-2">Comment</h6>
+                        <textarea id="comment" class="add-product-textarea" name="_status_update_comment" type="text" placeholder="Comment" for="editForm"></textarea>                    
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-2">
+                        <div class="add-product-label-div">
+                            <label class="add-product-label" for="reward_points">Reward Points</label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-10 d-flex align-items-center">
+                        <p id="reward_points">Reward Points will be credited automatically after the order is completed</p> 
+                    </div>
+                </div>
+
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %} <!-- js -->
+<script>
+    const resources = {
+        cancel_icon: "{{ url_for('static', filename = 'fonts/cancel_icon.svg') }}",
+        image_folder: "{{ uploadPath }}",
+    };
+</script>
+<script src="{{ url_for('static', filename='js/adminOrder.js') }}"></script>
+<script src="{{ url_for('static', filename='js/customSelect.js') }}"></script>
+{% endblock %}

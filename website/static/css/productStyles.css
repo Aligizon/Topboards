@@ -1,0 +1,95 @@
+/*--------------------PRODUCT SLIDER--------------------*/
+.prod-slider
+{
+    position: relative;
+    margin: auto;
+}
+
+.prod-slider .slider__item
+{
+    width: 100%;
+    border-radius: var(--border-radius4);
+}
+
+/* Ограничивающая оболочка */
+.prod-slider .slick-list
+{
+    overflow: hidden;
+}
+/* Лента слайдов */
+.prod-slider .slick-track
+{
+    display: flex;
+}
+
+/*---SLIDER_ARROWS---*/
+
+.prod-slider .slick-arrow
+{
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    margin-top: -25px;
+    font-size: 0;
+    width: 50px;
+    height: 50px;
+    border: none;
+    background-color: transparent;
+}
+
+.prod-slider .slick-arrow.slick-prev
+{
+    left: 0;
+    background: url(../fonts/arrow_prev_1_icon.svg) 0 0 / 100% no-repeat;
+}
+
+.prod-slider .slick-arrow.slick-next
+{
+    right: 0;
+    background: url(../fonts/arrow_next_1_icon.svg) 0 0 / 100% no-repeat;
+}
+
+/*--------------------PRODUCT SLIDER NAV--------------------*/
+.prod-slider-nav
+{
+    position: relative;
+    margin: auto;
+    min-width: 300px;
+}
+
+.prod-slider-nav .slider__item
+{
+    margin: 0 5px 0 5px;
+}
+
+/* Ограничивающая оболочка */
+.prod-slider-nav .slick-list
+{
+    overflow-x: hidden;
+}
+
+/* Лента слайдов */
+.prod-slider-nav .slick-track
+{
+    display: flex;
+}
+
+.print-select
+{
+    padding: 2px 5px;
+    color: var(--text-color-black);
+}
+.print-select *
+{
+    color: var(--text-color-black);
+}
+
+/*--------------------PRODUCT CONFIGURATION SETTINGS--------------------*/
+.product-options-div {
+    display: inline-block;
+    border-radius: 15px;
+    padding: 2px 5px;
+}
+.product-options-div.selected {
+    border: 1px solid var(--text-color3);
+}

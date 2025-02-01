@@ -1,0 +1,386 @@
+header
+{
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+@media screen and (max-width: 799px)
+{
+    .desktop-header
+    {
+        display: none;
+    }
+}
+
+/*----------------------------------------MOBILE HEADER----------------------------------------*/
+.mobile-header
+{
+    width: 100%;
+    background-color: var(--background-color2);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#sidebarCollapse
+{
+    background-color: transparent;
+    border: none;
+}
+
+@media screen and (min-width: 799px)
+{
+    .mobile-header
+    {
+        display: none;
+    }
+}
+/*---------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------TOP HEADER----------------------------------------*/
+.top-header
+{
+    background-color: var(--background-color2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8vw;
+    padding: 5px 0px;
+    width: 100%;
+}
+
+@media (max-width: 1160px)
+{
+    .top-header
+    {
+        gap: 5vw;
+    }
+}
+
+.logo
+{
+    background-color: var(--text-color-black);
+    border-radius: 15px;
+}
+
+.logo-inscription
+{
+    font-family: 'Road Rage', sans-serif;
+    margin: 5px 60px;
+}
+
+.icon-circle
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color1);
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.contact-info
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+@media (max-width: 1000px)
+{
+    .contact-info
+    {
+        display: none;
+    }
+
+    .top-header
+    {
+        gap: 10vw;
+    }
+}
+
+.icon
+{
+    width: 30px;
+    height: 30px;
+}
+
+.cart-icon
+{
+    position: relative;
+}
+
+.cart-icon span
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color-black);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: -10px;
+    top: 18px;
+    background-color: var(--text-color1);
+}
+
+.cart-icon:hover
+{
+    opacity: 0.7;
+    transition: 0.1s ease;
+}
+
+
+.search-box
+{
+    background-color: var(--background-color3);
+    color: var(--text-color-black);
+    border-radius: var(--border-radius3);
+    width: 18vw;
+    max-width: 300px;
+    min-width: 200px;
+    height: 40px;
+    padding: 0 6px;
+    outline: none;
+}
+
+.account-actions
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+}
+
+@media screen and (max-width: 600px)
+{
+    .search-icon
+    {
+        display: none;
+    }
+
+    .logo-inscription
+    {
+        font-family: 'Road Rage', sans-serif;
+        font-size: 36px;
+        margin: 0px 20px;
+    }
+    .icon
+    {
+        width: 25px;
+        height: 25px;
+    }
+
+    .cart-icon span
+    {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media screen and (max-width: 350px)
+{
+    .cart-icon
+    {
+        display: none;
+    }
+
+    .account-actions
+    {
+        justify-content: right;
+        gap: 0px;
+    }
+}
+
+/*------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------BOTTOM HEADER----------------------------------------*/
+
+.bottom-header {
+    background-color: var(--background-color1);
+    padding: 5px 0;
+}
+
+.nav-list > * {   
+    color: var(--text-color1);
+    white-space: nowrap;
+}   
+
+.nav-list {
+    max-width: 2000px;
+    margin: 0 auto 0 auto;
+}
+
+.nav-list-element {
+    position: relative;
+    text-align: center;
+}
+
+.sub-nav-list {
+    position: absolute;
+    left: 50%;
+    opacity: 0;
+    visibility: hidden;
+    text-align: left;
+    white-space: nowrap;
+    background-color: var(--background-color1);
+    border-radius: var(--border-radius1);
+    transform: translate(-50%);
+    margin-left: -0%;
+    padding: 0;
+    z-index: 1040;
+}
+.sub-nav-list.toggled {
+    animation: sub-list-animation 0.3s ease forwards;
+    visibility: visible; 
+}
+
+@keyframes sub-list-animation {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.sub-nav-list li {
+    margin: 25px 20px;
+    text-align: center;
+}
+
+.mobile-header, header, .offcanvas-header {
+    user-select: none;
+}
+/*---------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------CART WINDOW----------------------------------------*/
+#cart-list {
+    width: 100%;
+}
+
+#cart-list .cart-item:nth-child(even) {
+    background-color: var(--background-color2);
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 10px;
+    text-align: center;
+    align-items: center;
+}
+
+.cart-item-img img {
+    width: 100%;
+    border-radius: var(--border-radius2);
+}
+
+.cart-item-description {
+    text-align: left;
+}
+
+.cart-tab {
+    display: block;
+    text-align: center;
+    align-items: center;
+    width: 80%;
+}
+
+.cart-order, .cart-close {
+    width: 100%;
+    padding: 2px 0px;
+    border-radius: var(--border-radius2);
+}
+
+.cart-order {
+    color: var(--text-color-black);
+    background-color: var(--text-color1);
+    border: none;
+}
+.cart-close {
+    border: 1px solid var(--text-color1);
+    background-color: transparent;
+
+}
+
+
+/*-------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------PERSONAL ACCOUNT----------------------------------------*/
+.account-button-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+.account-button-wrapper a {
+    min-width: 40%;
+}
+.account-button-div {
+    text-align: center;
+    padding: 5px 10px;
+    border: 1px solid var(--text-color1);
+    border-radius: var(--border-radius2);
+}
+.account-button-div:hover {
+    transition: 0.25s ease;
+    background-color: var(--text-color1);
+    color: var(--background-color1);
+}
+
+/*----------------------------------------SIGN IN WINDOW----------------------------------------*/
+#offcanvasSignIn, #offcanvasCart
+{
+    min-width: 220px;
+    overflow: hidden;
+}
+.signIn-window
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.signIn-input
+{
+    height: 40px;
+    width: 100%;
+    background-color: var(--background-color1);
+    border: none;
+    border-bottom: 2px solid var(--text-color1);
+    outline: none;  
+}
+
+.signIn-submit-input
+{
+    height: 40px;
+    border: none;
+    border-radius: var(--border-radius2);
+    background-color: var(--background-color2);
+    width: 100%;
+}
+
+.forget-pass
+{
+    color: var(--text-color2);
+}
+
+.forget-pass:hover
+{
+    color: var(--text-color3);
+    transition: 0.15s ease;
+}
+
+.checkbox-div
+{
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    text-align: left;
+    align-items: center;
+}
+/*----------------------------------------------------------------------------------------------*/
+

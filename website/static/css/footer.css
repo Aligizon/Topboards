@@ -1,0 +1,23 @@
+/*----------------------------------------FOOTER----------------------------------------*/
+footer
+{
+    width: 100%;
+    background-color: var(--background-color2);
+    overflow: hidden;
+}
+
+.footer-row
+{
+    max-width: 2000px;
+}
+
+.footer-section
+{
+    margin: 0;
+}
+
+.footer-section p
+{
+    color: var(--text-color3);
+}
+/*--------------------------------------------------------------------------------------*/

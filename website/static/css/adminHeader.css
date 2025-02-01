@@ -1,0 +1,100 @@
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+}
+
+#admin-wrapper
+{
+    width: 100vw;
+    display: flex;
+    padding: 80px 0 0 0;
+    --adminHeaderOffset: 132.4px;
+}
+
+@media screen and (max-width: 768px)
+{
+    #admin-wrapper
+    {
+        padding: 53.2px 0 0 0;
+        --adminHeaderOffset: 53.2px;
+    }
+}
+
+/*----------------------------------------MOBILE HEADER----------------------------------------*/
+.mobile-header {
+    width: 100%;
+    background-color: var(--background-color2);
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media screen and (min-width: 769px) {
+    .mobile-header
+    {
+        display: none;
+    }
+}
+/*---------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------TOP HEADER----------------------------------------*/
+.desktop-header {
+    background-color: var(--background-color2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 0px 0px 15px;
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .desktop-header {
+        display: none;
+    }
+}
+
+.logo {
+    background-color: var(--text-color-black);
+    border-radius: 15px;
+}
+
+.logo-inscription {
+    font-family: 'Road Rage', sans-serif;
+    margin: 0px 60px;
+}
+
+.account-actions-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+}
+
+.account-actions-wrapper a {
+    height: 100%;
+}
+
+.user-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 0px 10px;
+    gap: 5px;
+    height: 100%;
+}
+
+.user-wrapper:hover {
+    background-color: var(--background-color4);
+}
+
+@media screen and (max-width: 768px)
+{
+    .logo-inscription
+    {
+        font-family: 'Road Rage', sans-serif;
+        font-size: 36px;
+        margin: 0px 20px;
+    }
+}
+/*------------------------------------------------------------------------------------------*/
