@@ -9,5 +9,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "-w", "4", "website.main:app", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "-w", "2", "website.main:app", "--bind", "0.0.0.0:8000"]
 # CMD [ "python",  "-m", "website.main"]
