@@ -15,8 +15,7 @@ DB_NAME = "database"
 
 def create_app():
     app = Flask(__name__)
-    app.secret_key = 'HFIAV3JA8MDCMAW2HKjdakw091JKDA6m'
-    app.permanent_session_lifetime = timedelta(days=7)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
     app.config['SESSION_REFRESH_EACH_REQUEST'] = True
 
     app.config["UPLOAD_EXTENSIONS"] = [".jpg", ".png", ".jpeg"]

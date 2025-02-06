@@ -11,3 +11,5 @@ __pycache__/
 
 # Log files
 *.log
+
+# website/static/product_images/*

@@ -18,8 +18,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./config/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
-      - postgres_data:/var/lib/postgresql/data
+      - ./config/pg_hba.conf:/var/lib/postgresql1/data/pg_hba.conf
+      - postgres_data:/var/lib/postgresql1/data
 
 volumes:
   postgres_data: {}  

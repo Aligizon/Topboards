@@ -59,7 +59,7 @@
 .main-slider .slick-arrow.slick-prev
 {
     left: 0;
-    background: url(../fonts/arrow_prev_1_icon.svg) 0 0 / 100% no-repeat;
+    background: url(../fonts/arrow_prev_1_icon.svg) 0 0 / 100% no-repeat;    
 }
 
 .main-slider .slick-arrow.slick-next
@@ -135,31 +135,6 @@
     }
 }
 
-/* #carouselControls
-{
-    background-color: var(--background-color2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 375px;
-    border-radius: var(--border-radius5);
-    margin: 0 auto;
-    max-width: 1200px;
-}
-
-.carousel-inner
-{
-    width: 60%;
-}
-
-.carousel-indicators [data-bs-target]
-{
-    border-radius: var(--border-radius1);
-    border: 0;
-    margin-top: 10px;
-    margin-bottom: 10px;    
-} */
-
 /*----------------------------------------SEC2----------------------------------------*/
 .section-2
 {
@@ -217,7 +192,6 @@
 
 .news-slider-control-el .slick-arrow.slick-prev
 {
-    
     background-image: url(../fonts/arrow_prev_2_icon.svg);
 }
 
@@ -310,7 +284,6 @@
 {
     margin: auto;
     border-radius: var(--border-radius3);
-    /* border: 2px solid white; */
     width: 90%;
     height: 100%;
     object-fit: contain;
@@ -387,7 +360,6 @@
 
 .recs-slider-control-el .slick-arrow.slick-prev
 {
-    
     background-image: url(../fonts/arrow_prev_2_icon.svg);
 }
 
