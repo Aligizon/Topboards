@@ -58,7 +58,7 @@ SECRET_KEY=your_secret_key
 
 ---
 
-## 👨‍💻 Автор
+## 👨‍💻 Author
 **Aligizon**  
 📧 Email: arseniy.akopov@gmail.com  
 🔗 GitHub: [github.com/Aligizon](https://github.com/Aligizon)
