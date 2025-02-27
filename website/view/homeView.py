@@ -362,11 +362,11 @@ def checkout():
     try:
         if (current_user.is_authenticated):
             if (not current_user.shopping_session or not current_user.shopping_session.cart_items):
-                flash('Your cart is empty (1 check)', category='error')
+                flash('Your cart is empty', category='error')
                 raise NoResultFound("Can't create an order with empty cart") 
         else:
             if not session.get('cart'):
-                flash('Your cart is empty  (1 check)', category='error')
+                flash('Your cart is empty', category='error')
                 raise NoResultFound("Can't create an order with empty cart")
     except Exception as e:
         app.logger.error(f"No cart items were found: {e}")

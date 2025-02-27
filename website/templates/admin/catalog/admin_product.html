@@ -41,7 +41,8 @@
 <div class="container-fluid mt-3">
     <div class="row">
         {% if product %}
-            <form id="editForm" class="base-form " action="/admin/product/update/{{product.id}}" enctype="multipart/form-data" method="post">
+            <form id="editForm" class="base-form" action="/admin/product/update/{{product.id}}" enctype="multipart/form-data" method="POST">
+                {{ form.hidden_tag() }}
                 <div class="row my-3">
                     <div class="col-md-2">
                         <div class="add-product-label-div">
@@ -62,7 +63,7 @@
                                     </div>
                                 </div>
                             {% endif %}
-                            <input id="prod_main_image" class="d-none" name="prod_main_image" type="file" accept=".jpg, .png, image/jpeg, image/png">
+                            {{ form.mainImage }}
                         </div>
                         <h6 class="mb-2">Additional Images</h6>
                         <div id="edit-additional-images-container" class="edit-image-container mb-3">
@@ -81,7 +82,7 @@
                                     </div>
                                 </div>
                             {% endif %}
-                            <input id="prod_images" class="d-none" name="product_img[]" type="file" multiple="multiple" accept=".jpg, .png, image/jpeg, image/png">
+                            {{ form.additionalImages }}
                         </div>
                     </div>
                 </div>
@@ -93,7 +94,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="name" class="base-input" name="_name" type="text" placeholder="Product Name" value="{{ product.name }}">    
+                        {{ form.name }}
                     </div>
                 </div>
 
@@ -104,7 +105,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <textarea id="description" class="add-product-textarea" name="_description" type="text" placeholder="Description" for="editForm">{{ product.desc }}</textarea>
+                        {{ form.desc }}
                     </div>
                 </div>
 
@@ -115,7 +116,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="model" class="base-input" name="_model" type="text" placeholder="Model" value="{{ product.model }}">
+                        {{ form.model }}
                     </div>
                 </div>
 
@@ -126,7 +127,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="category" class="base-input" name="_category" type="text" placeholder="Category" value="{{ product.category }}">
+                        {{ form.category }}
                     </div>
                 </div>
 
@@ -137,7 +138,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="brand" class="base-input" name="_brand" type="text" placeholder="Brand" value="{{ product.brand }}">
+                        {{ form.brand }}
                     </div>
                 </div>
 
@@ -148,7 +149,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="switches" class="base-input" name="_switches" type="text" placeholder="Switches" value="{{ product.switches }}">
+                        {{ form.switches }}
                     </div>
                 </div>
 
@@ -159,7 +160,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="color" class="base-input" name="_color" type="text" placeholder="Color name" value="{{ product.color }}">
+                        {{ form.color }}
                     </div>
                 </div>
 
@@ -170,7 +171,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="color_HEX" class="base-input" name="_color_HEX" type="text" placeholder="#FFFFFF" value="{{ product.color_HEX }}">
+                        {{ form.color_HEX }}
                     </div>
                 </div>
 
@@ -181,7 +182,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="SKU" class="base-input" name="_SKU" type="text" placeholder="SKU" value="{{ product.SKU }}">
+                        {{ form.SKU }}
                     </div>
                 </div>
 
@@ -192,7 +193,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="quantity" class="base-input" name="_quantity" type="number" placeholder="Quantity" value="{{ product.quantity }}">
+                        {{ form.quantity }}
                     </div>
                 </div>
 
@@ -203,7 +204,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="formFactor" class="base-input" name="_formFactor" type="text" placeholder="Form Factor" value="{{ product.form_factor }}">
+                        {{ form.form_factor }}
                     </div>
                 </div>
 
@@ -214,7 +215,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="dimensions" class="base-input" name="_dimensions" type="text" placeholder="Dimensions (L x W x H)" value="{{ product.dimensions }}">
+                        {{ form.dimensions }}
                     </div>
                 </div>
 
@@ -225,7 +226,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="weight" class="base-input" name="_weight" type="number" placeholder="Weight (kg)" step="0.001" value="{{ product.weight }}">
+                        {{ form.weight }}
                     </div>
                 </div>
 
@@ -236,7 +237,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="cost" class="base-input" name="_cost" type="number" placeholder="Cost (purchase price)" step="0.01" value="{{ product.cost }}">
+                        {{ form.cost }}
                     </div>
                 </div>
                 
@@ -247,7 +248,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="withoutTax" class="base-input" name="_withoutTax" type="number" placeholder="Price without Tax" step="0.01" value="{{ product.price_without_tax }}">
+                        {{ form.price_without_tax }}
                     </div>
                 </div>
 
@@ -258,7 +259,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="price" class="base-input" name="_price" type="number" placeholder="Price" step="0.01" value="{{ product.price }}">
+                        {{ form.price }}
                     </div>
                 </div>
 
@@ -270,14 +271,12 @@
                     </div>
                     <div class="col-md-10">
                         <div class="d-flex justify-content-start gap-4 align-items-center h-100">
+                            {% for subfield in form.is_enabled %}
                             <div class="d-flex align-items-center gap-2">
-                                <input id="enabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{1}}" {% if product.is_enabled %} checked {% endif %}>
-                                <label id="enabled_label" class="add-product-label" for="enabled">Enabled</label>
+                                <label class="add-product-label" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
+                                {{ subfield }}
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <input id="disabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{0}}" {% if not(product.is_enabled) %} checked {% endif %}>
-                                <label id="disabled_label" class="add-product-label" for="disabled">Disabled</label>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -285,6 +284,7 @@
         {% else %}
         <!-- Default add form -->
             <form id="addForm" class="base-form " action="/admin/catalog" enctype="multipart/form-data" method="post">
+                {{ form.hidden_tag() }}
                 <div class="row my-3">
                     <div class="col-md-2">
                         <div class="add-product-label-div">
@@ -299,7 +299,7 @@
                                     <img src="{{ url_for('static', filename = 'fonts/background_icon.svg') }}" alt="Image">
                                 </div>
                             </div>
-                            <input id="prod_main_image" class="d-none" name="prod_main_image" type="file" accept=".jpg, .png, image/jpeg, image/png">
+                            {{ form.mainImage }}
                         </div>
                         <h6 class="mb-2">Additional Images</h6>
                         <div id="edit-additional-images-container" class="edit-image-container mb-3">
@@ -308,7 +308,7 @@
                                     <img src="{{ url_for('static', filename = 'fonts/background_icon.svg') }}" alt="Image">
                                 </div>
                             </div>
-                            <input id="prod_images" class="d-none" name="product_img[]" type="file" multiple="multiple" accept=".jpg, .png, image/jpeg, image/png">
+                            {{ form.additionalImages }}
                         </div>
                     </div>
                 </div>
@@ -320,7 +320,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="name" class="base-input" name="_name" type="text" placeholder="Product Name">    
+                        {{ form.name }}
                     </div>
                 </div>
 
@@ -331,7 +331,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <textarea id="description" class="add-product-textarea" name="_description" type="text" placeholder="Description" for="addForm"></textarea>
+                        {{ form.desc }}
                     </div>
                 </div>
 
@@ -342,7 +342,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="model" class="base-input" name="_model" type="text" placeholder="Model">
+                        {{ form.model }}
                     </div>
                 </div>
 
@@ -353,7 +353,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="category" class="base-input" name="_category" type="text" placeholder="Category">
+                        {{ form.category }}
                     </div>
                 </div>
 
@@ -364,7 +364,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="brand" class="base-input" name="_brand" type="text" placeholder="Brand">
+                        {{ form.brand }}
                     </div>
                 </div>
 
@@ -375,7 +375,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="switches" class="base-input" name="_switches" type="text" placeholder="Switches">
+                        {{ form.switches }}
                     </div>
                 </div>
 
@@ -386,7 +386,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="color" class="base-input" name="_color" type="text" placeholder="Color">
+                        {{ form.color }}
                     </div>
                 </div>
 
@@ -397,7 +397,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="color_HEX" class="base-input" name="_color_HEX" type="text" placeholder="#FFFFFF">
+                        {{ form.color_HEX }}
                     </div>
                 </div>
 
@@ -408,7 +408,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="SKU" class="base-input" name="_SKU" type="text" placeholder="SKU">
+                        {{ form.SKU }}
                     </div>
                 </div>
 
@@ -419,7 +419,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="quantity" class="base-input" name="_quantity" type="number" placeholder="Quantity">
+                        {{ form.quantity }}
                     </div>
                 </div>
 
@@ -430,7 +430,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="formFactor" class="base-input" name="_formFactor" type="text" placeholder="Form Factor">
+                        {{ form.form_factor }}
                     </div>
                 </div>
 
@@ -441,7 +441,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="dimensions" class="base-input" name="_dimensions" type="text" placeholder="Dimensions (L x W x H)">
+                        {{ form.dimensions }}
                     </div>
                 </div>
 
@@ -452,7 +452,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="weight" class="base-input" name="_weight" type="number" placeholder="Weight (kg)" step="0.001">
+                        {{ form.weight }}
                     </div>
                 </div>
 
@@ -463,7 +463,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="cost" class="base-input" name="_cost" type="number" placeholder="Cost (purchase price)" step="0.01">
+                        {{ form.cost }}
                     </div>
                 </div>
 
@@ -474,7 +474,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="withoutTax" class="base-input" name="_withoutTax" type="number" placeholder="Price without Tax" step="0.01">
+                        {{ form.price_without_tax }}
                     </div>
                 </div>
 
@@ -485,7 +485,7 @@
                         </div>
                     </div>
                     <div class="col-md-10">
-                        <input id="price" class="base-input" name="_price" type="number" placeholder="Price" step="0.01">
+                        {{ form.price }}
                     </div>
                 </div>
 
@@ -497,14 +497,12 @@
                     </div>
                     <div class="col-md-10">
                         <div class="d-flex justify-content-start gap-4 align-items-center h-100">
+                            {% for subfield in form.is_enabled %}
                             <div class="d-flex align-items-center gap-2">
-                                <input id="enabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{1}}">
-                                <label id="enabled_label" class="add-product-label" for="enabled">Enabled</label>
+                                <label class="add-product-label" for="{{ subfield.id }}">{{ subfield.label.text }}</label>
+                                {{ subfield }}
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <input id="disabled" class="add-product-radio" name="_isEnabled" type="radio" value="{{0}}" checked>
-                                <label id="disabled_label" class="add-product-label" for="disabled">Disabled</label>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

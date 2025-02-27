@@ -22,12 +22,14 @@ import json
 import shutil
 import re
 
+from ..controller.admin_validators import ProductForm
+
+
 @adminView.before_request
 def check_user():
     if not is_admin_accessible(current_user):
         flash('You don\'t have permission to access this page', category='error')
         return redirect(url_for('adminAuth.adminLogin'))
-    
 
 def is_admin_accessible(user):
     return user.is_authenticated and user.role >= Role.Manager.value
@@ -46,76 +48,34 @@ def home():
 @adminView.route('/catalog', methods=['GET', 'POST'])
 def catalog():
     if request.method == 'POST':
-        product_main_image = request.files.get('prod_main_image')
-        product_additional_images = request.files.getlist('product_img[]')
-        productName = request.form.get('_name')
-        description = request.form.get('_description')
-        model = request.form.get('_model')
-        category = request.form.get('_category')
-        brand = request.form.get('_brand')
-        switches = request.form.get('_switches')
-        color = request.form.get('_color')
-        color_HEX = request.form.get('_color_HEX')
-        sku = request.form.get('_SKU')
-        quantity = request.form.get('_quantity')
-        formFactor = request.form.get('_formFactor')
-        dimensions = request.form.get('_dimensions')
-        weight = request.form.get('_weight')
-        price = request.form.get('_price')
-        withoutTax = request.form.get('_withoutTax')
-        cost = request.form.get('_cost')
-        isEnabled = request.form.get('_isEnabled')
+        form = ProductForm()
 
-        try:
-            isEnabled = int(isEnabled)
-            if not(isinstance(isEnabled, int)):
-                flash('You must specify if product is enabled', category='error')
-                return redirect(url_for('adminView.catalog'))
-        except:
-            flash('You must specify if product is enabled', category='error')
-            return redirect(url_for('adminView.catalog'))
-        
-        pattern = r'^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$'
-  
-        if product_main_image.filename == '':
-            flash('Main image must be uploaded', category='error')   
-        elif len(productName) < 2:
-            flash('Name must be specified', category='error')
-        elif len(model) < 2:
-            flash('Model name must be specified', category='error')
-        elif len(category) < 2:
-            flash('Category name must be specified', category='error')
-        elif len(brand) < 2:
-            flash('Brand name must be specified', category='error')
-        elif len(color) < 2:
-            flash('Product color must be specified', category='error')
-        elif not re.match(pattern, color_HEX):
-            flash('Enter valid HEX color', category='error')
-        elif len(quantity) < 1:
-            flash('Quantity must be specified', category='error')
-        elif len(price) < 1:
-            flash('Price must be specified', category='error')
-        elif len(cost) < 1:
-            flash('Cost must be specified', category='error')
-        else:
+        if form.validate_on_submit(): 
             new_product = Product(
-                name=productName,
-                desc=description,
-                model=model,
-                category=category,
-                brand=brand,
-                switches=switches,
-                color=color,
-                color_HEX=color_HEX,
-                SKU=sku,
-                quantity=quantity,
-                form_factor=formFactor,
-                dimensions=dimensions,
-                weight=weight,
-                cost=cost,
-                price_without_tax=withoutTax,
-                price=price,
-                is_enabled=isEnabled)
+                name=form.name.data,
+                desc=form.desc.data,
+                model=form.model.data,
+                category=form.category.data,
+                brand=form.brand.data,
+                switches=form.switches.data,
+                color=form.color.data,
+                color_HEX=form.color_HEX.data,
+                SKU=form.SKU.data,
+                quantity=form.quantity.data,
+                form_factor=form.form_factor.data,
+                dimensions=form.dimensions.data,
+                weight=form.weight.data,
+                cost=form.cost.data,
+                price_without_tax=form.price_without_tax.data,
+                price=form.price.data,
+                is_enabled=True if form.is_enabled.data == '1' else False)
+            
+            if form.mainImage.data:
+                product_main_image = form.mainImage.data
+            else:
+                flash('Main image must be uploaded', category='error')
+                raise FileNotFoundError("Main image must be uploaded")
+            product_additional_images = form.additionalImages.data
             
             try:
                 # MAIN IMAGE UPLOAD
@@ -149,8 +109,8 @@ def catalog():
                                     return redirect(url_for('adminView.catalog'))
                             image.save(os.path.join(app.config["UPLOAD_PATH"], filename))
                             new_product.product_images.append(Product_image(image_name=filename, is_main = False))
-
                 db.session.add(new_product)
+                
             except Exception as e:
                 db.session.rollback()
                 app.logger.error(f'Error while adding images: {e}')
@@ -159,6 +119,9 @@ def catalog():
 
             db.session.commit()
             flash('Product was added', category='success')
+        else:
+            for f, e in form.errors.items():
+                flash(f + ': '  + e[0], category='error')
 
     products = Product.query.order_by('id').all()
     return render_template('admin/catalog/admin_catalog.html', products=products)
@@ -167,73 +130,31 @@ def catalog():
 @adminView.route('/product/update/<int:id>', methods=['GET', 'POST'])
 def product_update(id):
     product = Product.query.get_or_404(id)
+    form = ProductForm(obj=product)
 
     if request.method == 'POST':
-        product_main_image = request.files.get('prod_main_image')
-        product_additional_images = request.files.getlist('product_img[]')
-        productName = request.form.get('_name')
-        description = request.form.get('_description')
-        model = request.form.get('_model')
-        category = request.form.get('_category')
-        brand = request.form.get('_brand')
-        switches = request.form.get('_switches')
-        color = request.form.get('_color')
-        color_HEX = request.form.get('_color_HEX')
-        sku = request.form.get('_SKU')
-        quantity = request.form.get('_quantity')
-        formFactor = request.form.get('_formFactor')
-        dimensions = request.form.get('_dimensions')
-        weight = request.form.get('_weight')
-        price = request.form.get('_price')
-        withoutTax = request.form.get('_withoutTax')
-        cost = request.form.get('_cost')
-        isEnabled = request.form.get('_isEnabled')
-
-        try:
-            isEnabled = int(isEnabled)
-        except:
-            flash('You must specify if product is enabled', category='error')
-            return redirect(url_for('adminView.catalog'))
-        
-        pattern = r'^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$'
-
-        if len(productName) < 2:
-            flash('Name must be specified', category='error')
-        elif len(model) < 2:
-            flash('Model name must be specified', category='error')
-        elif len(category) < 2:
-            flash('Category name must be specified', category='error')
-        elif len(brand) < 2:
-            flash('Brand name must be specified', category='error')
-        elif len(color) < 2:
-            flash('Product color must be specified', category='error')
-        elif not re.match(pattern, color_HEX):
-            flash('Enter valid HEX color', category='error')
-        elif len(quantity) < 1:
-            flash('Quantity must be specified', category='error')
-        elif len(price) < 1:
-            flash('Price must be specified', category='error')
-        elif len(cost) < 1:
-            flash('Cost must be specified', category='error')
-        else:
-            product.name=productName
-            product.desc=description
-            product.model=model
-            product.category=category
-            product.brand=brand
-            product.switches=switches
-            product.color=color
-            product.color_HEX=color_HEX
-            product.SKU=sku
-            product.quantity=quantity
-            product.form_factor=formFactor
-            product.dimensions=dimensions
-            product.weight=weight
-            product.cost=cost
-            product.price=price
-            product.price_without_tax=withoutTax
-            product.is_enabled=isEnabled
+        if form.validate_on_submit():         
+            product.name=form.name.data
+            product.desc=form.desc.data
+            product.model=form.model.data
+            product.category=form.category.data
+            product.brand=form.brand.data
+            product.switches=form.switches.data
+            product.color=form.color.data
+            product.color_HEX=form.color_HEX.data
+            product.SKU=form.SKU.data
+            product.quantity=form.quantity.data
+            product.form_factor=form.form_factor.data
+            product.dimensions=form.dimensions.data
+            product.weight=form.weight.data
+            product.cost=form.cost.data
+            product.price_without_tax=form.price_without_tax.data
+            product.price=form.price.data
+            product.is_enabled= True if form.is_enabled.data == '1' else False
             product.modified_at = func.now()
+
+            product_main_image = form.mainImage.data
+            product_additional_images = form.additionalImages.data
 
             #images editing
             try:
@@ -252,10 +173,8 @@ def product_update(id):
                         else:
                             product_main_image.save(os.path.join(app.config["UPLOAD_PATH"], filename))
                             old_main_image = Product_image.query.filter(Product_image.product_id==id, Product_image.is_main==True).first()
-                            print(old_main_image.image_name)
                             os.remove(os.path.join(app.config["UPLOAD_PATH"], old_main_image.image_name))
                             old_main_image.image_name = filename
-                            print(old_main_image.image_name)
 
                 # additional images update
                 if product_additional_images[0].filename != '':
@@ -289,10 +208,13 @@ def product_update(id):
             
             db.session.commit()
             flash('Product was edited', category='success')
+            return redirect(url_for('adminView.catalog'))
+        else:
+            for f, e in form.errors.items():
+                flash(f + ': '  + e[0], category='error')
 
-        return redirect(url_for('adminView.catalog'))
-
-    return render_template('admin/catalog/admin_product.html', product=product)
+    form.is_enabled.data = '1' if product.is_enabled else '0'
+    return render_template('admin/catalog/admin_product.html', product=product, form=form)
 
 @adminView.route('/product/copy/<int:id>')
 def product_copy(id):
@@ -364,7 +286,8 @@ def product_delete(id):
 
 @adminView.route('/product')
 def product():
-    return render_template('admin/catalog/admin_product.html')
+    form = ProductForm()
+    return render_template('admin/catalog/admin_product.html', form=form)
 
 #------------------------------Main page categories------------------------------#
 @adminView.route('/categories', methods=['GET', 'POST'])
@@ -989,9 +912,7 @@ def customers():
                                 password=generate_password_hash(password),
                                 account_balance=accountBalance,
                                 is_enabled=isEnabled)
-                
-                print(addresslines1,addresslines2,cities,postalCodes,countries)
-                
+                                
                 for i in range(len(addresslines1)):
                     if (addresslines1[i] == '' or addresslines2[i] == '' or cities[i] == '' or postalCodes[i] == '' or countries[i] == ''):
                         db.session.rollback()
@@ -1124,9 +1045,7 @@ def customers_update(id):
                 app.logger.error(e)
                 if isinstance(e.orig, psycopg2.errors.ForeignKeyViolation):
                     flash("You can't modify a shipping address of an order", category='error')
-                    print("Foreign key violation detected:", e)
                 else:
-                    print("An integrity error occurred:", e)
                     flash('An error occurred', category='error')
                 return redirect(url_for("adminView.customers"))
             
