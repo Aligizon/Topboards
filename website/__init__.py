@@ -1,5 +1,7 @@
 from flask import Flask, redirect, url_for, request
 from flask_migrate import Migrate
+from dotenv import load_dotenv
+import os
 from os import path
 from flask_login import LoginManager
 from .model import db
@@ -11,21 +13,20 @@ from .controller import adminAuth as admin_auth_blueprint
     
 from datetime import timedelta
 
-DB_NAME = "database"
 
 def create_app():
     app = Flask(__name__)
+
+    load_dotenv()
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
     app.config['SESSION_REFRESH_EACH_REQUEST'] = True
-
     app.config["UPLOAD_EXTENSIONS"] = [".jpg", ".png", ".jpeg"]
     app.config["UPLOAD_PATH"] = 'website/static/img/product_images'
+    app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
-    app.config['SECRET_KEY'] = 'f70hjsnjvs83n742n48c94w35jith5slp4qac'
-    # app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:postgres@localhost:5432/{DB_NAME}'
-    # app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:postgres@192.168.56.1:5432/{DB_NAME}'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://topboards:my_topboards_16@postgres:5432/{DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{os.getenv("POSTGRES_USER")}:{os.getenv("POSTGRES_PASSWORD")}@postgres:5432/{os.getenv("POSTGRES_DB")}'
    
+
     app.config['SECURITY_ADMIN_LOGIN_URL'] = '/admin/login'
     app.config['SECURITY_CLIENT_LOGIN_URL'] = '/login'
     migrate = Migrate(app, db)
@@ -57,7 +58,7 @@ def create_app():
 
 
 def create_database(app):
-    if not path.exists('website/' + DB_NAME):
+    if not path.exists('website/' + os.getenv("POSTGRES_DB")):
         with app.app_context():
             db.create_all()
         print('Database created')

@@ -6,7 +6,6 @@ from ..model.models import User, Role, UserType, Role
 from ..model import db
 
 
-
 @auth.route('/login', methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':

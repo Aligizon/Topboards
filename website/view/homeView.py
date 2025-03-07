@@ -42,6 +42,22 @@ def home():
     return render_template('index.html', products=products)
 
 
+@homeView.route('/catalog/accessories')
+def catalog_accessories():
+    products_query = Product.query.filter(Product.is_enabled==True, Product.category=='Accessories').order_by('id')
+    products = products_query.all()
+    switches, brands, prices = createProductFilters(products)
+    products_query = filterProducts(products_query, prices)
+    return render_template('catalog.html', products=products_query.all(), switchesList=switches, brandsList=brands, prices=prices)
+
+@homeView.route('/catalog/otherServices')
+def catalog_otherServices():
+    products_query = Product.query.filter(Product.is_enabled==True, Product.category=='Other Services').order_by('id')
+    products = products_query.all()
+    switches, brands, prices = createProductFilters(products)
+    products_query = filterProducts(products_query, prices)
+    return render_template('catalog.html', products=products_query.all(), switchesList=switches, brandsList=brands, prices=prices)
+
 @homeView.route('/catalog/mice')
 def catalog_mice():
     products_query = Product.query.filter(Product.is_enabled==True, Product.category=='Mice').order_by('id')
