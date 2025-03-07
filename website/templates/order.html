@@ -153,7 +153,7 @@
                                         <div class="item-property"><p class="text-3 fw-light">{{ cartItem.product.switches }}</p></div>
                                     </div>
                                 </div>
-                                <div class="item-price"><h6>{{ (cartItem.product.price | int  * cartItem.quantity) | decimal_filter }} $</h6></div>
+                                <div class="item-price"><h6>{{ cartItem.product.price | decimal_filter  * cartItem.quantity }} $</h6></div>
                             </div>
                         {% endfor %}
                     {% else %}

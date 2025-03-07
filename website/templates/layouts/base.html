@@ -43,7 +43,7 @@
                                 </div>
                                 <div class="cart-item-description">
                                     <div class="cart-item-total-price my-1">
-                                        <h6 class="item-price">${{ (cartItem.product.price | int  * cartItem.quantity) | decimal_filter }}</h6>
+                                        <h6 class="item-price">${{ cartItem.product.price | decimal_filter  * cartItem.quantity }}</h6>
                                     </div>
                                     <div class="cart-item-name my-1">
                                         <h6>{{ cartItem.product.name }} {{ cartItem.product.color }}</h6>
@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="cart-item-description">
                                     <div class="cart-item-total-price my-1">
-                                        <h6 class="item-price">${{ (cartItem.price | int  * cartItem.quantity) | decimal_filter }}</h6>
+                                        <h6 class="item-price">${{ cartItem.price | decimal_filter * cartItem.quantity }}</h6>
                                     </div>
                                     <div class="cart-item-name my-1">
                                         <h6>{{ cartItem.name }} {{ cartItem.color }}</h6>

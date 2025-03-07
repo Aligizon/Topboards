@@ -52,7 +52,7 @@
                                         {% if product.switches and product.form_factor %}
                                             <p class="product-description">{{ product.switches }}, {{ product.form_factor }}</p> 
                                         {% endif %}
-                                        <h4 class="product-price">${{ product.price|int }}</h4>
+                                        <h4 class="product-price">${{ product.price|decimal_filter }}</h4>
                                     </div>
                                 </a>
                             {% endif %}
@@ -128,7 +128,7 @@
                                         {% if product.switches and product.form_factor %}
                                             <p class="product-description">{{ product.switches }}, {{ product.form_factor }}</p> 
                                         {% endif %}
-                                        <h4 class="product-price">${{ product.price|int }}</h4>
+                                        <h4 class="product-price">${{ product.price|decimal_filter }}</h4>
                                     </div>
                                 </a>
                             {% endif %}
@@ -164,7 +164,7 @@
                                     </div>
 
                                     <div class="product-description-wrapper">
-                                        <h4 class="product-price">from ${{ product.price|int }}</h4>
+                                        <h4 class="product-price">from ${{ product.price|decimal_filter }}</h4>
                                     </div>
                                 </a>
                             {% endif %}
