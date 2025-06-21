@@ -17,7 +17,7 @@ Topboards is a web application developed on **Flask**, using **PostgreSQL** and 
 - **Database**: PostgreSQL
 - **Frontend**: JavaScript, Jinja2, Bootstrap, Slick Slider
 - **Containerization**: Docker, Docker Compose
-- **Deployment**: GitHub, server (http://45.138.74.220:8000 - Ubuntu)
+- **Deployment**: GitHub
 
 ---
 
